@@ -1,0 +1,11 @@
+zhiyiyuemiao:
+  #  省份
+  province: "陕西省"
+  #  市
+  city: "西安市"
+  #  区
+  district: ""
+  #  1:HPV九价 2： HPV四价 3： HPV二价-进口 4： HPV二价（国产）
+  product: 1
+#  接种地ID
+  customerId : 1
