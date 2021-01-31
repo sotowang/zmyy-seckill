@@ -10,7 +10,7 @@ const (
 	//某地区医院列表URL
 	CustomerListUrl = "https://cloud.cn2030.com/sc/wx/HandlerSubscribe.ashx?act=CustomerList"
 	//授权URL
-	AuthUrl = "https://cloud.cn2030.com/sc/wx/HandlerSubscribe.ashx?act=auth&code=051QKd200S308L1nR6300ZP3pT2QKd2d"
+	AuthUrl = "https://cloud.cn2030.com/sc/wx/HandlerSubscribe.ashx?act=auth"
 	//某医院内HPV疫苗情况URL
 	CustomerProductURL = "https://cloud.cn2030.com/sc/wx/HandlerSubscribe.ashx?act=CustomerProduct"
 )
