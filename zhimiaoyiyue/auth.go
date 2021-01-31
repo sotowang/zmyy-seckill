@@ -2,8 +2,8 @@ package zhimiaoyiyue
 
 import (
 	"fmt"
-	"zmyy_seckill/src/bili/consts"
-	"zmyy_seckill/src/bili/fetcher"
+	"zmyy_seckill/consts"
+	"zmyy_seckill/fetcher"
 )
 
 func AuthAndSetSessionID() error {

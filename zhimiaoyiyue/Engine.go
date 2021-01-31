@@ -2,8 +2,8 @@ package zhimiaoyiyue
 
 import (
 	"fmt"
-	"zmyy_seckill/src/bili/config"
-	"zmyy_seckill/src/bili/model"
+	"zmyy_seckill/config"
+	"zmyy_seckill/model"
 )
 
 type ZMYYEngine struct {

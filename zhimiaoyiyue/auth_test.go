@@ -3,7 +3,7 @@ package zhimiaoyiyue
 import (
 	"fmt"
 	"testing"
-	"zmyy_seckill/src/bili/util"
+	"zmyy_seckill/src/seckill/util"
 )
 
 func TestAuth(t *testing.T) {

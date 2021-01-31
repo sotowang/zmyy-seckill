@@ -3,10 +3,10 @@ package zhimiaoyiyue
 import (
 	"fmt"
 	"strconv"
-	"zmyy_seckill/src/bili/consts"
-	"zmyy_seckill/src/bili/fetcher"
-	"zmyy_seckill/src/bili/model"
-	"zmyy_seckill/src/bili/util"
+	"zmyy_seckill/consts"
+	"zmyy_seckill/fetcher"
+	"zmyy_seckill/model"
+	"zmyy_seckill/util"
 )
 
 func (e *ZMYYEngine) GetCustomerProduct(customerId int) (*model.RootSource, error) {

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"zmyy_seckill/src/bili/consts"
-	"zmyy_seckill/src/bili/util"
+	"zmyy_seckill/consts"
+	"zmyy_seckill/util"
 )
 
 func Fetch(url string, headers map[string]string) ([]byte, error) {

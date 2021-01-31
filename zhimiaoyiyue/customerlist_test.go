@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"testing"
-	"zmyy_seckill/src/bili/model"
-	"zmyy_seckill/src/bili/util"
+	"zmyy_seckill/src/seckill/model"
+	"zmyy_seckill/src/seckill/util"
 )
 
 type CustomerList struct {

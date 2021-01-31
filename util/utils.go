@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/url"
 	"regexp"
-	"zmyy_seckill/src/bili/model"
+	"zmyy_seckill/model"
 )
 
 func TransferToCustomerListModel(jsonCont []byte, cumtomers *model.CustomerList) error {
