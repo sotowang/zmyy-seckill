@@ -12,5 +12,9 @@ const (
 	//授权URL
 	AuthUrl = "https://cloud.cn2030.com/sc/wx/HandlerSubscribe.ashx?act=auth"
 	//某医院内HPV疫苗情况URL
-	CustomerProductURL = "https://cloud.cn2030.com/sc/wx/HandlerSubscribe.ashx?act=CustomerProduct"
+	CustomerProductURL   = "https://cloud.cn2030.com/sc/wx/HandlerSubscribe.ashx?act=CustomerProduct"
+	CustSubscribeDateUrl = "https://cloud.cn2030.com/sc/wx/HandlerSubscribe.ashx?act=GetCustSubscribeDateAll"
+	CaptchaVerifyUrl     = "https://cloud.cn2030.com/sc/wx/HandlerSubscribe.ashx?act=CaptchaVerify"
+	GetCaptchaUrl        = "https://cloud.cn2030.com/sc/wx/HandlerSubscribe.ashx?act=GetCaptcha"
+	SaveUrl              = "https://cloud.cn2030.com/sc/wx/HandlerSubscribe.ashx?act=Save20"
 )

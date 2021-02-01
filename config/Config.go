@@ -18,6 +18,13 @@ type CustomerConf struct {
 	//0为九价
 	Product    string `yaml:"product,omitempty" default:1`
 	CustomerId int    `yaml:"customerId,omitempty" default:1776`
+	Birthday   string `yaml:"birthday,omitempty" default:""`
+	Tel        string `yaml:"tel,omitempty" default:""`
+	Sex        int    `yaml:"sex,omitempty" default:1`
+	Name       string `yaml:"name,omitempty" default:""`
+	IdCard     string `yaml:"idcard,omitempty" default:""`
+	Mxid       string `yaml:"mxid,omitempty" default:""`
+	Guid       string `yaml:"guid,omitempty" default:""`
 }
 
 func (c *RootConf) GetConf() (CustomerConf, error) {

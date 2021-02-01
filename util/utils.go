@@ -21,6 +21,14 @@ func TransferToCustomerProductListModel(jsonCont []byte, m *model.RootSource) er
 	}
 	return nil
 }
+
+func TransferToSubscribeDateModel(jsonCont []byte, m *model.SubscribeDate) error {
+	err := json.Unmarshal(jsonCont, &m)
+	if err != nil {
+		return err
+	}
+	return nil
+}
 func UrlEncode(orgUrl string) string {
 	encodeUrl := url.QueryEscape(orgUrl)
 	return encodeUrl
