@@ -3,6 +3,9 @@ package util
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
+	"github.com/robertkrimen/otto"
+	"io/ioutil"
 	"net/url"
 	"os"
 	"os/exec"
@@ -41,26 +44,51 @@ func TransferToVerifyModel(jsonCont []byte, m *model.VerifyPicModel) error {
 	return nil
 }
 
-func Base64ToPics(m model.VerifyPicModel) {
+func Base64ToPics(m model.VerifyPicModel) error {
 	dragon := m.Dragon
 	tiger := m.Tiger
 	d, _ := base64.StdEncoding.DecodeString(dragon)
 	t, _ := base64.StdEncoding.DecodeString(tiger)
-	fd, _ := os.OpenFile("C:\\Users\\Administrator\\IdeaProjects\\zmyy_seckill\\imgs\\dragon.png", os.O_RDWR|os.O_CREATE, os.ModePerm)
-	ft, _ := os.OpenFile("C:\\Users\\Administrator\\IdeaProjects\\zmyy_seckill\\imgs\\tiger.png", os.O_RDWR|os.O_CREATE, os.ModePerm)
+	fd, _ := os.OpenFile("../imgs/dragon.png", os.O_RDWR|os.O_CREATE, os.ModePerm)
+	ft, _ := os.OpenFile("../imgs/tiger.png", os.O_RDWR|os.O_CREATE, os.ModePerm)
 	defer fd.Close()
 	defer ft.Close()
-	fd.Write(d)
-	ft.Write(t)
+	_, err := fd.Write(d)
+	if err != nil {
+		fmt.Printf("Base64ToPics() err : %v", err)
+		return err
+	}
+	_, err = ft.Write(t)
+	if err != nil {
+		fmt.Printf("Base64ToPics() err : %v", err)
+		return err
+	}
+	return nil
 }
 
-func CallPythonScript(tigerPath, dragonPath string) []byte {
+func CallPythonScript(tigerPath, dragonPath string) ([]byte, error) {
 	args := []string{"C:\\Users\\Administrator\\IdeaProjects\\SlideCrack\\slide_01\\main.py", tigerPath, dragonPath}
 	out, err := exec.Command("python", args...).Output()
 	if err != nil {
-		return nil
+		fmt.Printf("CallPythonScript err: %v\n", err)
+		return nil, err
 	}
-	return out
+	return out, nil
+}
+
+func CallJsScript(jsfile string) (string, error) {
+	bytes, err := ioutil.ReadFile(jsfile)
+	if err != nil {
+		fmt.Printf("CallJsScript err : %v\n", err)
+		return "", err
+	}
+	vm := otto.New()
+	_, err = vm.Run(string(bytes))
+	enc, err := vm.Call("zftsl", nil)
+	if err != nil {
+		return "", err
+	}
+	return enc.String(), nil
 }
 
 func UrlEncode(orgUrl string) string {
@@ -68,7 +96,6 @@ func UrlEncode(orgUrl string) string {
 	return encodeUrl
 }
 func ParseSessionId(s string) string {
-
 	const sessionIdRe = `ASP.NET_SessionId=([^;]+)`
 	compile := regexp.MustCompile(sessionIdRe)
 	match := compile.FindSubmatch([]byte(s))

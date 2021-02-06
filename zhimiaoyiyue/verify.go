@@ -9,12 +9,17 @@ import (
 	"zmyy_seckill/util"
 )
 
-func (e *ZMYYEngine) GetVerifyPic(zftsl string) (*model.VerifyPicModel, error) {
+func (e *ZMYYEngine) GetVerifyPic() (*model.VerifyPicModel, error) {
 	url := consts.GetCaptchaUrl
 	headers := make(map[string]string)
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
 	headers["cookie"] = "ASP.NET_SessionId=" + consts.SessionId
+	zftsl, err2 := util.CallJsScript("../js/app.js")
+	if err2 != nil {
+		fmt.Printf("GetVerifyPic().getZftsl() err :%v\n", err2)
+		return nil, err2
+	}
 	headers["zftsl"] = zftsl
 	bytes, err := fetcher.Fetch(url, headers)
 	if err != nil {
@@ -30,7 +35,16 @@ func (e *ZMYYEngine) GetVerifyPic(zftsl string) (*model.VerifyPicModel, error) {
 	return &pics, nil
 
 }
-func (e *ZMYYEngine) CaptchaVerify() {
+func (e *ZMYYEngine) CaptchaVerify() error {
+	picModel, err2 := e.GetVerifyPic()
+	if err2 != nil {
+		fmt.Printf("CaptchaVerify() err: %v\n", err2)
+		return err2
+	}
+	err2 = util.Base64ToPics(*picModel)
+	if err2 != nil {
+		return err2
+	}
 	url := consts.CaptchaVerifyUrl
 	headers := make(map[string]string)
 	headers["User-Agent"] = consts.UserAgent
@@ -38,15 +52,10 @@ func (e *ZMYYEngine) CaptchaVerify() {
 	headers["cookie"] = "ASP.NET_SessionId=" + consts.SessionId
 	bytes, err := fetcher.Fetch(url, headers)
 	if err != nil {
-		fmt.Printf("GetCustomerProduct() err : %v \n", err)
+		return err
 	}
-	subsDates := model.SubscribeDate{}
-	err = util.TransferToSubscribeDateModel(bytes, &subsDates)
-	if err != nil {
-		fmt.Printf("GetCustSubscribeDateAll() err: %v\n ", err)
-
-	}
-	return
+	fmt.Printf("%s", bytes)
+	return nil
 }
 
 func (e *ZMYYEngine) Save20(date string) {

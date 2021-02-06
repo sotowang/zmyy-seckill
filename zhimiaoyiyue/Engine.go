@@ -47,4 +47,5 @@ func (e *ZMYYEngine) Run() {
 	for i, v := range cps {
 		fmt.Printf("疫苗 %d ：id = %d, name = %s, price=%.2f 元\n", i+1, v.Id, v.Text, v.Price)
 	}
+
 }
