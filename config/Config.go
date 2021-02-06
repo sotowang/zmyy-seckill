@@ -28,7 +28,7 @@ type CustomerConf struct {
 }
 
 func (c *RootConf) GetConf() (CustomerConf, error) {
-	yamlFile, err := ioutil.ReadFile(getCurrentPath() + "/conf.yaml")
+	yamlFile, err := ioutil.ReadFile("./conf.yaml")
 	fmt.Printf("path : %s \n", getCurrentPath())
 	if err != nil {
 		fmt.Printf("yaml file get err #%v \n", err)

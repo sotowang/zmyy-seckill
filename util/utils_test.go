@@ -14,9 +14,10 @@ func TestBase64ToPics(t *testing.T) {
 	Base64ToPics(m)
 }
 func TestCallPythonScript(t *testing.T) {
-	dragonPath := "C:\\Users\\Administrator\\IdeaProjects\\zmyy_seckill\\imgs\\dragon.png"
-	tigerPath := "C:\\Users\\Administrator\\IdeaProjects\\zmyy_seckill\\imgs\\tiger.png"
-	pythonScript, _ := CallPythonScript(tigerPath, dragonPath)
+	dragonPath := "../imgs/dragon.png"
+	tigerPath := "../imgs/tiger.png"
+	processPath := "../imgs/process.png"
+	pythonScript, _ := CallPythonScript(tigerPath, dragonPath, processPath)
 	fmt.Printf("%s", pythonScript)
 }
 func TestCallJsScript(t *testing.T) {

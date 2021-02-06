@@ -66,9 +66,10 @@ func Base64ToPics(m model.VerifyPicModel) error {
 	return nil
 }
 
-func CallPythonScript(tigerPath, dragonPath string) ([]byte, error) {
-	args := []string{"C:\\Users\\Administrator\\IdeaProjects\\SlideCrack\\slide_01\\main.py", tigerPath, dragonPath}
-	out, err := exec.Command("python", args...).Output()
+func CallPythonScript(tigerPath, dragonPath, procssPath string) ([]byte, error) {
+	exePath := "../pyexe/main/main.exe"
+	args := []string{tigerPath, dragonPath, procssPath}
+	out, err := exec.Command(exePath, args...).Output()
 	if err != nil {
 		fmt.Printf("CallPythonScript err: %v\n", err)
 		return nil, err
@@ -76,8 +77,8 @@ func CallPythonScript(tigerPath, dragonPath string) ([]byte, error) {
 	return out, nil
 }
 
-func CallJsScript(jsfile string) (string, error) {
-	bytes, err := ioutil.ReadFile(jsfile)
+func CallJsScript() (string, error) {
+	bytes, err := ioutil.ReadFile("../js/app.js")
 	if err != nil {
 		fmt.Printf("CallJsScript err : %v\n", err)
 		return "", err
@@ -86,6 +87,7 @@ func CallJsScript(jsfile string) (string, error) {
 	_, err = vm.Run(string(bytes))
 	enc, err := vm.Call("zftsl", nil)
 	if err != nil {
+		fmt.Printf("CallJsScript err : %v\n", err)
 		return "", err
 	}
 	return enc.String(), nil

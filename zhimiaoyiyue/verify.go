@@ -15,7 +15,7 @@ func (e *ZMYYEngine) GetVerifyPic() (*model.VerifyPicModel, error) {
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
 	headers["cookie"] = "ASP.NET_SessionId=" + consts.SessionId
-	zftsl, err2 := util.CallJsScript("../js/app.js")
+	zftsl, err2 := util.CallJsScript()
 	if err2 != nil {
 		fmt.Printf("GetVerifyPic().getZftsl() err :%v\n", err2)
 		return nil, err2
