@@ -5,8 +5,8 @@
 **建了个群，感兴趣的可以加一下：788512807**
 
 * 问题进度
-  * 滑块验证码的x轴坐标可通过opencv来解决。附一个大佬的Python代码，亲测可用https://github.com/crazyxw/SlideCrack
-  * **滑块验证码获取需要一个zftsl的参数，猜测与时间戳和sessionid有关，目前无法得到该值，故无法拿到滑块验证码文本。**
+  * 【解决中。。】滑块验证码的x轴坐标可通过opencv来解决。附一个大佬的Python代码，亲测可用https://github.com/crazyxw/SlideCrack
+  * **【已解决】滑块验证码获取需要一个zftsl的参数，猜测与时间戳和sessionid有关，目前无法得到该值，故无法拿到滑块验证码文本。**
 
 * 问题分析（**已解决**）：
 
