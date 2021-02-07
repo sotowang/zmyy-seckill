@@ -14,13 +14,13 @@ func (e *ZMYYEngine) GetCustomerProduct(customerId int) (*model.RootSource, erro
 	headers := make(map[string]string)
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
-	headers["cookie"] = "ASP.NET_SessionId=" + consts.SessionId
+	headers["cookie"] = e.Conf.Cookie
 	bytes, err := fetcher.Fetch(url, headers)
 	if err != nil {
 		fmt.Printf("GetCustomerProduct() err : %v \n", err)
 	}
 	customerProducts := model.RootSource{}
-	err = util.TransferToCustomerProductListModel(bytes, &customerProducts)
+	err = util.Transfer2CustomerProductListModel(bytes, &customerProducts)
 	if err != nil {
 		fmt.Printf("GetCustomerProduct() err: %v\n ", err)
 		return nil, err

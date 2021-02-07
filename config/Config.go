@@ -24,11 +24,11 @@ type CustomerConf struct {
 	Name       string `yaml:"name,omitempty" default:""`
 	IdCard     string `yaml:"idcard,omitempty" default:""`
 	Mxid       string `yaml:"mxid,omitempty" default:""`
-	Guid       string `yaml:"guid,omitempty" default:""`
+	Cookie     string `yaml:"cookie,omitempty" default:""`
 }
 
 func (c *RootConf) GetConf() (CustomerConf, error) {
-	yamlFile, err := ioutil.ReadFile("./conf.yaml")
+	yamlFile, err := ioutil.ReadFile("../config/conf.yaml")
 	fmt.Printf("path : %s \n", getCurrentPath())
 	if err != nil {
 		fmt.Printf("yaml file get err #%v \n", err)

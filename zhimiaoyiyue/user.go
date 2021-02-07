@@ -14,8 +14,8 @@ func (e *ZMYYEngine) getUserInfo() {
 	headers["Referer"] = consts.Refer
 	//setSessionId
 	AuthAndSetSessionID()
-	headers["cookie"] = "ASP.NET_SessionId=" + consts.SessionId
-	zftsl, err2 := util.CallJsScript()
+	headers["Cookie"] = e.Conf.Cookie
+	zftsl, err2 := util.GetZFTSL()
 	if err2 != nil {
 		return
 	}

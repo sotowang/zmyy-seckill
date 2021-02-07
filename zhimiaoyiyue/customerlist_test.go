@@ -64,7 +64,7 @@ func Test_transfer(t *testing.T) {
 `
 	b := []byte(s1)
 	customers := model.CustomerList{}
-	err = util.TransferToCustomerListModel(b, &customers)
+	err = util.Transfer2CustomerListModel(b, &customers)
 	if err != nil {
 		t.Errorf("failed, err : %v", err)
 	}

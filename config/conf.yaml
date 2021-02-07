@@ -21,5 +21,6 @@ zhiyiyuemiao:
   idcard: "411111111111111111"
   #  mxid 我也不知道这是啥，需要自己抓包获取
   mxid: "AAAAAM9YAAAdYjQB"
-  guid: "dc2e3200-22ea-44cf-bb1d-44b997616fed"
+  #  这个Cookie需要抓包获取
+  cookie: "ASP.NET_SessionId=ckj0zh4tlekmcy4hh3clp3pc"
 

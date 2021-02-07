@@ -18,7 +18,7 @@ func (e *ZMYYEngine) GetCustomerList() (*model.CustomerList, error) {
 		return nil, err2
 	}
 	customers := model.CustomerList{}
-	err2 = util.TransferToCustomerListModel(bytes, &customers)
+	err2 = util.Transfer2CustomerListModel(bytes, &customers)
 	if err2 != nil {
 		return nil, err2
 	}

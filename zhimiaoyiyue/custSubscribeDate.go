@@ -17,13 +17,13 @@ func (e *ZMYYEngine) GetCustSubscribeDateAll(customerId, productId, month int) (
 	headers := make(map[string]string)
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
-	headers["cookie"] = "ASP.NET_SessionId=" + consts.SessionId
+	headers["cookie"] = e.Conf.Cookie
 	bytes, err := fetcher.Fetch(url, headers)
 	if err != nil {
 		fmt.Printf("GetCustomerProduct() err : %v \n", err)
 	}
 	subsDates := model.SubscribeDate{}
-	err = util.TransferToSubscribeDateModel(bytes, &subsDates)
+	err = util.Transfer2SubscribeDateModel(bytes, &subsDates)
 	if err != nil {
 		fmt.Printf("GetCustSubscribeDateAll() err: %v\n ", err)
 		return nil, err

@@ -11,7 +11,7 @@ func AuthAndSetSessionID() error {
 	headers := make(map[string]string)
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
-	zftsl, err2 := util.CallJsScript()
+	zftsl, err2 := util.GetZFTSL()
 	if err2 != nil {
 		return err2
 	}
