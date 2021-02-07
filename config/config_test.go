@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestGetconfig(t *testing.T) {
+func TestGetConfig(t *testing.T) {
 	var yaml RootConf
 	conf, err := yaml.GetConf()
 	if err != nil {

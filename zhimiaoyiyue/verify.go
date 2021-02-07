@@ -2,7 +2,6 @@ package zhimiaoyiyue
 
 import (
 	"fmt"
-	"strconv"
 	"zmyy_seckill/consts"
 	"zmyy_seckill/fetcher"
 	"zmyy_seckill/model"
@@ -10,7 +9,7 @@ import (
 )
 
 /**
-获取验证码图片
+获取验证码Base64编码
 */
 func (e *ZMYYEngine) GetVerifyPic() error {
 	url := consts.GetCaptchaUrl
@@ -71,23 +70,8 @@ func (e *ZMYYEngine) CaptchaVerify() (*model.VerifyResultModel, error) {
 	m := &model.VerifyResultModel{}
 	err = util.Transfer2VerifyResultModel(bytes, m)
 	if err != nil || m.Status != 200 || m.Guid == "" {
-		fmt.Printf("CaptchaVerify() 验证码识别失败 :%v\n", err)
+		fmt.Printf("CaptchaVerify() 验证码识别失败，若状态码不为200，可能是Session过期 :err:%v, 状态码：%d,GUID: %s\n", err, m.Status, m.Guid)
 		return nil, err
 	}
 	return m, nil
-}
-
-func (e *ZMYYEngine) Save20(date string) {
-	url := consts.SaveUrl + "&birthday=" + e.Conf.Birthday + "&tel=" + e.Conf.Tel + "&sex=" + strconv.Itoa(e.Conf.Sex) + "&cname=" + util.UrlEncode(e.Conf.Name) + "&doctype=1&idcard=" + e.Conf.IdCard + "&mxid=" + e.Conf.Mxid + "&date=" + date + "&pid=" + e.Conf.Product + "&Ftime=1&guid="
-	headers := make(map[string]string)
-	headers["User-Agent"] = consts.UserAgent
-	headers["Referer"] = consts.Refer
-	headers["cookie"] = e.Conf.Cookie
-	headers["Connection"] = "keep-alive"
-	bytes, err := fetcher.Fetch(url, headers)
-	if err != nil {
-		fmt.Printf("Save20() err : %v \n", err)
-	}
-	fmt.Printf("%s", bytes)
-	return
 }

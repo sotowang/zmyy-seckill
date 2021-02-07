@@ -6,21 +6,21 @@ zhiyiyuemiao:
   #  区
   district: ""
   #  1:HPV九价 2： HPV四价 3： HPV二价-进口 4： HPV二价（国产）
-  product: 1
+  product: 54
   #  接种地ID
   customerId: 1
   #  生日
-  birthday: "2021-03-01"
+  birthday: "1995-03-01"
   #  电话
-  tel: "1888888888"
-  #  性别：1为男性
+  tel: "17777777777"
+  #  性别：1为男性 2为女性
   sex: 1
   #  姓名
   name: "王小二"
   #  身份证号
   idcard: "411111111111111111"
   #  mxid 我也不知道这是啥，需要自己抓包获取
-  mxid: "AAAAAM9YAAAdYjQB"
-  #  这个Cookie需要抓包获取
-  cookie: "ASP.NET_SessionId=ckj0zh4tlekmcy4hh3clp3pc"
+  mxid: "AAAAACJZAAAiYjQB"
+  #  这个Cookie需要抓包获取 【有效期为5分钟或更久】
+  cookie: "ASP.NET_SessionId=cl1fw53pvvwm5xobhocx3xes"
 
