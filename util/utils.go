@@ -17,6 +17,7 @@ import (
 func Transfer2CustomerListModel(jsonCont []byte, cumtomers *model.CustomerList) error {
 	err := json.Unmarshal(jsonCont, &cumtomers)
 	if err != nil {
+		fmt.Printf("Transfer2CustomerListModel err:%v\n", err)
 		return err
 	}
 	return nil
@@ -46,7 +47,8 @@ func Transfer2VerifyResultModel(jsonCont []byte, m *model.VerifyResultModel) err
 
 //将Base64文件（../imgs/veryfiPics）转成图片
 func Base64ToPics() error {
-	data, err := ioutil.ReadFile("../imgs/verifyPics")
+	path := GetCurrentPath()
+	data, err := ioutil.ReadFile(path + "/imgs/verifyPics")
 	if err != nil {
 		fmt.Printf("can not load file err : %v\n", err)
 		return err
@@ -58,8 +60,8 @@ func Base64ToPics() error {
 	}
 	d, _ := base64.StdEncoding.DecodeString(m.Dragon)
 	t, _ := base64.StdEncoding.DecodeString(m.Tiger)
-	fd, _ := os.OpenFile("../imgs/dragon.png", os.O_RDWR|os.O_CREATE, os.ModePerm)
-	ft, _ := os.OpenFile("../imgs/tiger.png", os.O_RDWR|os.O_CREATE, os.ModePerm)
+	fd, _ := os.OpenFile(path+"/imgs/dragon.png", os.O_RDWR|os.O_CREATE, os.ModePerm)
+	ft, _ := os.OpenFile(path+"/imgs/tiger.png", os.O_RDWR|os.O_CREATE, os.ModePerm)
 	defer fd.Close()
 	defer ft.Close()
 	_, err = fd.Write(d)
@@ -79,7 +81,8 @@ func Base64ToPics() error {
   调用Python脚本破解验证码
 */
 func CallPythonScript(tigerPath, dragonPath, procssPath string) (string, error) {
-	exePath := "../pyexe/main/main.exe"
+	path := GetCurrentPath()
+	exePath := path + "/pyexe/main/main.exe"
 	args := []string{tigerPath, dragonPath, procssPath}
 	out, err := exec.Command(exePath, args...).Output()
 	if err != nil {
@@ -93,7 +96,8 @@ func CallPythonScript(tigerPath, dragonPath, procssPath string) (string, error) 
 }
 
 func GetZFTSL() (string, error) {
-	bytes, err := ioutil.ReadFile("../js/app.js")
+	path := GetCurrentPath()
+	bytes, err := ioutil.ReadFile(path + "/js/app.js")
 	if err != nil {
 		fmt.Printf("GetZFTSL err : %v\n", err)
 		return "", err
@@ -105,7 +109,7 @@ func GetZFTSL() (string, error) {
 		fmt.Printf("GetZFTSL err : %v\n", err)
 		return "", err
 	}
-	fmt.Printf("zftsl : %s\n", enc.String())
+	//fmt.Printf("zftsl : %s\n", enc.String())
 	return enc.String(), nil
 }
 
@@ -118,4 +122,17 @@ func ParseSessionId(s string) string {
 	compile := regexp.MustCompile(sessionIdRe)
 	match := compile.FindSubmatch([]byte(s))
 	return string(match[1])
+}
+func GetCurrentPath() string {
+	dir, err := os.Getwd()
+	if err != nil {
+		fmt.Printf("Get current process path failed . err : %v \n", err)
+		return ""
+	}
+	dir = strings.Replace(dir, "\\", "/", -1)
+	const pathRe = `([0-9a-zA-z:]*[0-9a-zA-Z/]+/zmyy_seckill)`
+	compile := regexp.MustCompile(pathRe)
+	match := compile.FindSubmatch([]byte(dir))
+	dir = string(match[1])
+	return dir
 }

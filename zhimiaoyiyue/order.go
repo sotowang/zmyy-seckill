@@ -5,19 +5,21 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 	"zmyy_seckill/consts"
 	"zmyy_seckill/fetcher"
 	"zmyy_seckill/util"
 )
 
-func (e *ZMYYEngine) SaveOrder(date string) (ok bool, err error) {
+func (e *ZMYYEngine) SaveOrder(date string, productId string) (ok bool, err error) {
 	ok = false
+	time.Sleep(1000 * time.Millisecond)
 	m, err := e.CaptchaVerify()
 	if err != nil {
 		return false, err
 	}
 	fmt.Printf("GUID : %s\n", m.Guid)
-	url := consts.SaveUrl + "&birthday=" + e.Conf.Birthday + "&tel=" + e.Conf.Tel + "&sex=" + strconv.Itoa(e.Conf.Sex) + "&cname=" + util.UrlEncode(e.Conf.Name) + "&doctype=1&idcard=" + e.Conf.IdCard + "&mxid=" + e.Conf.Mxid + "&date=" + date + "&pid=" + e.Conf.Product + "&Ftime=1&guid=" + m.Guid
+	url := consts.SaveUrl + "&birthday=" + e.Conf.Birthday + "&tel=" + e.Conf.Tel + "&sex=" + strconv.Itoa(e.Conf.Sex) + "&cname=" + util.UrlEncode(e.Conf.Name) + "&doctype=1&idcard=" + e.Conf.IdCard + "&mxid=" + e.Conf.Mxid + "&date=" + date + "&pid=" + productId + "&Ftime=1&guid=" + m.Guid
 	headers := make(map[string]string)
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer

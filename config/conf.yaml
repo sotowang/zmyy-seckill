@@ -1,26 +1,28 @@
 zhiyiyuemiao:
-  #  省
-  province: "陕西省"
-  #  市
-  city: "西安市"
-  #  区
+  #  【必填】省
+  province: "河南省"
+  #  【选填】市
+  city: "郑州市"
+  #  区（可以不用填，不打算开发此功能）
   district: ""
-  #  1:HPV九价 2： HPV四价 3： HPV二价-进口 4： HPV二价（国产）
-  product: 54
-  #  接种地ID
-  customerId: 1
-  #  生日
+  #  【必填】抢购疫苗的类型（必填），务必与小程序上的名称一致
+  productName: "九价人乳头瘤病毒疫苗"
+  #  【必填】预约地点名称(必填),务必与小程序上的名称一致
+  customerName: "郑州市郑东新区博学路社区卫生服务中心"
+  #  【必填】疫苗可预约的月份
+  month: 202102
+  #  【必填】生日
   birthday: "1995-03-01"
-  #  电话
+  #  【必填】电话
   tel: "17777777777"
-  #  性别：1为男性 2为女性
+  #  【必填】性别：1为男性 2为女性
   sex: 1
-  #  姓名
+  #  【必填】姓名
   name: "王小二"
-  #  身份证号
+  #  【必填】身份证号
   idcard: "411111111111111111"
-  #  mxid 我也不知道这是啥，需要自己抓包获取
+  #  mxid 我也不知道这是啥，选不用管
   mxid: "AAAAACJZAAAiYjQB"
-  #  这个Cookie需要抓包获取 【有效期为5分钟或更久】
-  cookie: "ASP.NET_SessionId=cl1fw53pvvwm5xobhocx3xes"
+  #  【必填】这个Cookie需要抓包获取 【有效期为5分钟或更久】
+  cookie: "ASP.NET_SessionId=d3pl5joqcemx212phkf5kkzp"
 

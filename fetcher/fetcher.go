@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"zmyy_seckill/util"
 )
 
 func Fetch(url string, headers map[string]string) ([]byte, error) {
@@ -44,7 +45,8 @@ func FetchBigResp(url string, headers map[string]string) error {
 		fmt.Printf("wrong status code : %d\n", resp.StatusCode)
 		return err
 	}
-	path := "../imgs/verifyPics"
+	path := util.GetCurrentPath()
+	path += "/imgs/verifyPics"
 	f, _ := os.Create(path)
 	defer f.Close()
 

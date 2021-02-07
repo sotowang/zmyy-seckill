@@ -2,13 +2,14 @@ package zhimiaoyiyue
 
 import (
 	"fmt"
+	"os"
+	"strconv"
 	"zmyy_seckill/config"
 	"zmyy_seckill/model"
 )
 
 type ZMYYEngine struct {
-	Conf    config.CustomerConf
-	Seckill SecKill
+	Conf config.CustomerConf
 }
 
 type SecKill interface {
@@ -25,27 +26,20 @@ func (e *ZMYYEngine) Init() {
 }
 
 func (e *ZMYYEngine) Run() {
-	//授权
-	err := AuthAndSetSessionID()
-	if err != nil {
-		fmt.Printf("授权AuthAndSetSessionID（）出现未知错误！ err : %v \n", err)
-	}
-	//获取指定地区接种地点列表
-	customerList, err := e.GetCustomerList()
-	customers := customerList.Customers
-	fmt.Printf("指定地方下，共找到 %d 个接种地点 ：\n", len(customers))
-	for i, v := range customers {
-		fmt.Printf("第%d个:  %v \n", i, v)
-	}
+	//获取指定地区接种地点的cutomerId
+	customerId, _ := e.GetCustomerList()
+	//获取指定接种地点的productId
+	productId, _ := e.GetCustomerProduct(customerId)
+	//获取可预约的时间
+	subscribeDates, _ := e.GetCustSubscribeDateAll(customerId, productId, e.Conf.Month)
 
-	//获取ID这1776的接种地的信息
-	products, err := e.GetCustomerProduct(e.Conf.CustomerId)
-	fmt.Printf("以下为 --%s-- 信息: \n", products.Cname)
-	fmt.Printf("开始预约日期：%s ; 结束预约日期 %s \n", products.StartDate, products.EndDate)
-	fmt.Printf("疫苗信息：\n")
-	cps := products.CustomerProducts
-	for i, v := range cps {
-		fmt.Printf("疫苗 %d ：id = %d, name = %s, price=%.2f 元\n", i+1, v.Id, v.Text, v.Price)
+	fmt.Printf("可预约时间如下：将尝试从以下时间中预约！ \n")
+	for i, v := range subscribeDates.Dates {
+		fmt.Printf("时间%d : %v\n", i+1, v.Date)
+		//e.SaveOrder(v.Date,strconv.Itoa(productId))
 	}
-
+	e.SaveOrder("2021-02-10", strconv.Itoa(productId))
+	fmt.Printf("Press any key to exit...")
+	b := make([]byte, 1)
+	os.Stdin.Read(b)
 }

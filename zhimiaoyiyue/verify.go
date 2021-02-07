@@ -2,6 +2,7 @@ package zhimiaoyiyue
 
 import (
 	"fmt"
+	"time"
 	"zmyy_seckill/consts"
 	"zmyy_seckill/fetcher"
 	"zmyy_seckill/model"
@@ -40,6 +41,7 @@ func (e *ZMYYEngine) GetVerifyPic() error {
 func (e *ZMYYEngine) CaptchaVerify() (*model.VerifyResultModel, error) {
 	//1.获取验证码的base64编码
 	err := e.GetVerifyPic()
+	time.Sleep(1 * time.Second)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +50,8 @@ func (e *ZMYYEngine) CaptchaVerify() (*model.VerifyResultModel, error) {
 	if err != nil {
 		return nil, err
 	}
-	tigerPath, dragonPath, processPath := "../imgs/tiger.png", "../imgs/dragon.png", "../imgs/process.png"
+	path := util.GetCurrentPath()
+	tigerPath, dragonPath, processPath := path+"/imgs/tiger.png", path+"/imgs/dragon.png", path+"/imgs/process.png"
 	//3.图片验证码识别
 	x, err := util.CallPythonScript(tigerPath, dragonPath, processPath)
 	if err != nil {
@@ -70,7 +73,7 @@ func (e *ZMYYEngine) CaptchaVerify() (*model.VerifyResultModel, error) {
 	m := &model.VerifyResultModel{}
 	err = util.Transfer2VerifyResultModel(bytes, m)
 	if err != nil || m.Status != 200 || m.Guid == "" {
-		fmt.Printf("CaptchaVerify() 验证码识别失败，若状态码不为200，可能是Session过期 :err:%v, 状态码：%d,GUID: %s\n", err, m.Status, m.Guid)
+		fmt.Printf("CaptchaVerify() 验证码识别失败 :err:%v, %s\n", err, bytes)
 		return nil, err
 	}
 	return m, nil

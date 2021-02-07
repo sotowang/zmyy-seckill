@@ -8,7 +8,7 @@ func init() {
 	e.Init()
 }
 func TestSaveOrder(t *testing.T) {
-	_, err := e.SaveOrder("2021-02-10")
+	_, err := e.SaveOrder("2021-02-10", "54")
 	if err != nil {
 		t.Errorf("%v", err)
 	}
