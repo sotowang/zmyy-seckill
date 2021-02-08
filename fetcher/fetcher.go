@@ -5,10 +5,14 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"time"
 	"zmyy_seckill/util"
 )
 
+var rateLimiter = time.Tick(1000 * time.Millisecond)
+
 func Fetch(url string, headers map[string]string) ([]byte, error) {
+	<-rateLimiter
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 	for k, v := range headers {
@@ -26,14 +30,10 @@ func Fetch(url string, headers map[string]string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	//sessionIdstring := resp.Header.Get("Set-Cookie")
-	//if sessionIdstring != "" {
-	//	consts.SessionId = util.ParseSessionId(sessionIdstring)
-	//	fmt.Printf("Sessionid string got  : %s \n", consts.SessionId)
-	//}
 	return contents, nil
 }
-func FetchBigResp(url string, headers map[string]string) error {
+func FetchBigResp(url string, headers map[string]string, prefix string) error {
+	<-rateLimiter
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 	for k, v := range headers {
@@ -46,7 +46,7 @@ func FetchBigResp(url string, headers map[string]string) error {
 		return err
 	}
 	path := util.GetCurrentPath()
-	path += "/imgs/verifyPics"
+	path = path + "/imgs/" + prefix
 	f, _ := os.Create(path)
 	defer f.Close()
 

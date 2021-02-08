@@ -2,7 +2,6 @@ package zhimiaoyiyue
 
 import (
 	"fmt"
-	"time"
 	"zmyy_seckill/consts"
 	"zmyy_seckill/fetcher"
 	"zmyy_seckill/model"
@@ -10,25 +9,24 @@ import (
 )
 
 /**
-获取验证码Base64编码
+获取验证码图片
 */
-func (e *ZMYYEngine) GetVerifyPic() error {
+func (e *ZMYYEngine) GetVerifyPic(date, productId string, index string) error {
 	url := consts.GetCaptchaUrl
 	headers := make(map[string]string)
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
 	headers["Cookie"] = e.Conf.Cookie
-	zftsl, err := util.GetZFTSL()
+	zftsl, _ := util.GetZFTSL()
 	headers["zftsl"] = zftsl
+	prefix := productId + "-" + date + "-" + index
+	err := fetcher.FetchBigResp(url, headers, prefix)
 	if err != nil {
+		fmt.Printf("获取验证码Base64编码失败：err : %v\n", err)
 		return err
 	}
-	if err != nil {
-		fmt.Printf("GetVerifyPic().getZftsl() err :%v\n", err)
-		return err
-	}
-	headers["zftsl"] = zftsl
-	err = fetcher.FetchBigResp(url, headers)
+	//Base64转图片
+	err = util.Base64ToPics(prefix)
 	if err != nil {
 		return err
 	}
@@ -38,24 +36,15 @@ func (e *ZMYYEngine) GetVerifyPic() error {
 /**
 滑块验证码验证
 */
-func (e *ZMYYEngine) CaptchaVerify() (*model.VerifyResultModel, error) {
-	//1.获取验证码的base64编码
-	err := e.GetVerifyPic()
-	time.Sleep(1 * time.Second)
-	if err != nil {
-		return nil, err
-	}
-	//2.base64编码转图片
-	err = util.Base64ToPics()
-	if err != nil {
-		return nil, err
-	}
+func (e *ZMYYEngine) CaptchaVerify(date, productId string, index string) (guid string, err error) {
 	path := util.GetCurrentPath()
-	tigerPath, dragonPath, processPath := path+"/imgs/tiger.png", path+"/imgs/dragon.png", path+"/imgs/process.png"
-	//3.图片验证码识别
+	prefix := productId + "-" + date + "-" + index
+	tigerPath, dragonPath, processPath := path+"/imgs/"+prefix+"tiger.png", path+"/imgs/"+prefix+"dragon.png", path+"/imgs/"+prefix+"process.png"
+	//2.图片验证码识别
 	x, err := util.CallPythonScript(tigerPath, dragonPath, processPath)
+	util.DeleteFile(tigerPath, dragonPath, processPath, path+"/imgs/"+prefix)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	url := consts.CaptchaVerifyUrl + "&token=&x=" + x + "&y=5"
 
@@ -68,13 +57,13 @@ func (e *ZMYYEngine) CaptchaVerify() (*model.VerifyResultModel, error) {
 	bytes, err := fetcher.Fetch(url, headers)
 	if err != nil {
 		fmt.Printf("CaptchaVerify() err :%v\n", err)
-		return nil, err
+		return "", err
 	}
 	m := &model.VerifyResultModel{}
 	err = util.Transfer2VerifyResultModel(bytes, m)
 	if err != nil || m.Status != 200 || m.Guid == "" {
-		fmt.Printf("CaptchaVerify() 验证码识别失败 :err:%v, %s\n", err, bytes)
-		return nil, err
+		fmt.Printf("CaptchaVerify() 验证码%s-%s-%s验证失败，guid=%s ; err:%v; %s\n", productId, date, index, m.Guid, err, bytes)
+		return "", err
 	}
-	return m, nil
+	return m.Guid, nil
 }

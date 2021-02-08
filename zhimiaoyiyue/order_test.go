@@ -8,7 +8,9 @@ func init() {
 	e.Init()
 }
 func TestSaveOrder(t *testing.T) {
-	_, err := e.SaveOrder("2021-02-10", "54")
+	e.GetVerifyPic("2021-02-27", "2", "")
+	guid, err := e.CaptchaVerify("2021-02-27", "2", "")
+	_, err = e.SaveOrder("2021-02-27", "2", guid, "AAAAAOJdAAAzYjQB")
 	if err != nil {
 		t.Errorf("%v", err)
 	}

@@ -30,3 +30,24 @@ func (e *ZMYYEngine) GetCustSubscribeDateAll(customerId, productId, month int) (
 	}
 	return &subsDates, nil
 }
+func (e *ZMYYEngine) GetCustSubscribeDateDetail(date string, productId, customerId int) (*model.SubscribeDateDetail, error) {
+	url := consts.CustSubscribeDateDetailUrl + "&pid=" + strconv.Itoa(productId) + "&id=" + strconv.Itoa(customerId) + "&scdate=" + date
+	headers := make(map[string]string)
+	headers["User-Agent"] = consts.UserAgent
+	headers["Referer"] = consts.Refer
+	headers["cookie"] = e.Conf.Cookie
+	zftsl, _ := util.GetZFTSL()
+	headers["zftsl"] = zftsl
+	bytes, err := fetcher.Fetch(url, headers)
+	if err != nil {
+		fmt.Printf("GetCustSubscribeDateDetail() err : %v \n", err)
+	}
+	dateDetails := &model.SubscribeDateDetail{}
+	err = util.Transfer2SubscribeDateDetailModel(bytes, dateDetails)
+	if err != nil {
+		fmt.Printf("GetCustSubscribeDateDetail() err: %v\n ", err)
+		return nil, err
+	}
+	dateDetails.Date = date
+	return dateDetails, nil
+}

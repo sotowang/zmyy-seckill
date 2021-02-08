@@ -6,7 +6,7 @@ zhiyiyuemiao:
   #  区（可以不用填，不打算开发此功能）
   district: ""
   #  【必填】抢购疫苗的类型（必填），务必与小程序上的名称一致
-  productName: "九价人乳头瘤病毒疫苗"
+  productName: "四价人乳头瘤病毒疫苗"
   #  【必填】预约地点名称(必填),务必与小程序上的名称一致
   customerName: "郑州市郑东新区博学路社区卫生服务中心"
   #  【必填】疫苗可预约的月份
@@ -21,8 +21,6 @@ zhiyiyuemiao:
   name: "王小二"
   #  【必填】身份证号
   idcard: "411111111111111111"
-  #  mxid 我也不知道这是啥，选不用管
-  mxid: "AAAAACJZAAAiYjQB"
   #  【必填】这个Cookie需要抓包获取 【有效期为5分钟或更久】
-  cookie: "ASP.NET_SessionId=d3pl5joqcemx212phkf5kkzp"
+  cookie: "ASP.NET_SessionId=vsheq4rz2oroqs1wpcxy224p"
 

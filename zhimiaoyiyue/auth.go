@@ -7,14 +7,11 @@ import (
 	"zmyy_seckill/util"
 )
 
-func AuthAndSetSessionID() error {
+func (e *ZMYYEngine) AuthAndSetSessionID() error {
 	headers := make(map[string]string)
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
-	zftsl, err2 := util.GetZFTSL()
-	if err2 != nil {
-		return err2
-	}
+	zftsl, _ := util.GetZFTSL()
 	headers["zftsl"] = zftsl
 	contents, err := fetcher.Fetch(consts.AuthUrl, headers)
 	if err != nil {

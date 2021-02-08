@@ -13,3 +13,11 @@ func TestZMYYEngine_GetCustSubscribeDateAll(t *testing.T) {
 	}
 	fmt.Printf("%v", all)
 }
+func TestZMYYEngine_GetCustSubscribeDateDetail(t *testing.T) {
+	e := ZMYYEngine{}
+	all, err := e.GetCustSubscribeDateDetail("2021-02-27", 2, 1921)
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+	fmt.Printf("%v", all)
+}

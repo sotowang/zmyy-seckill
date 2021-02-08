@@ -7,7 +7,9 @@ import (
 )
 
 func TestAuth(t *testing.T) {
-	AuthAndSetSessionID()
+	e := ZMYYEngine{}
+	e.Init()
+	e.AuthAndSetSessionID()
 }
 
 func TestParseSessionId(t *testing.T) {

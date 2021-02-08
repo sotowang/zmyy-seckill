@@ -12,8 +12,6 @@ func (e *ZMYYEngine) getUserInfo() {
 	headers := make(map[string]string)
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
-	//setSessionId
-	AuthAndSetSessionID()
 	headers["Cookie"] = e.Conf.Cookie
 	zftsl, err2 := util.GetZFTSL()
 	if err2 != nil {

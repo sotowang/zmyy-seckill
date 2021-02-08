@@ -28,14 +28,20 @@ func (e *ZMYYEngine) GetCustomerProduct(customerId int) (int, error) {
 		return -1, err
 	}
 	fmt.Printf("正在查找疫苗信息：\n")
+	var selected model.CustomerProduct
+	var contains bool
 	for k, v := range customerProducts.CustomerProducts {
-		fmt.Printf("第 %d个疫苗：%s\n", k+1, v.Text)
+		fmt.Printf("第 %d个疫苗：%s productId: %d\n", k+1, v.Text, v.Id)
 		if v.Text == e.Conf.ProductName {
-			fmt.Printf("选中第 %d个疫苗：%s，其productId为 %d\n", k+1, v.Text, v.Id)
-			return v.Id, nil
+			selected = v
+			contains = true
 		}
-
 	}
+	if contains {
+		fmt.Printf("选中疫苗：%s，其productId为 %d\n", selected.Text, selected.Id)
+		return selected.Id, nil
+	}
+
 	return -1, errors.New("未找到指定疫苗，请对比配置文件疫苗信息是否正确！")
 
 }

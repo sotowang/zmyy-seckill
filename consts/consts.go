@@ -16,5 +16,6 @@ const (
 	GetCaptchaUrl        = "https://cloud.cn2030.com/sc/wx/HandlerSubscribe.ashx?act=GetCaptcha"
 	SaveUrl              = "https://cloud.cn2030.com/sc/wx/HandlerSubscribe.ashx?act=Save20"
 	//获取订单状态
-	OrderStatusUrl = "https://cloud.cn2030.com/sc/wx/HandlerSubscribe.ashx?act=GetOrderStatus"
+	OrderStatusUrl             = "https://cloud.cn2030.com/sc/wx/HandlerSubscribe.ashx?act=GetOrderStatus"
+	CustSubscribeDateDetailUrl = "https://cloud.cn2030.com/sc/wx/HandlerSubscribe.ashx?act=GetCustSubscribeDateDetail"
 )

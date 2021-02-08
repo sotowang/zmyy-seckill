@@ -22,7 +22,6 @@ type CustomerConf struct {
 	Sex          int    `yaml:"sex,omitempty" default:1`
 	Name         string `yaml:"name,omitempty" default:""`
 	IdCard       string `yaml:"idcard,omitempty" default:""`
-	Mxid         string `yaml:"mxid,omitempty" default:""`
 	Cookie       string `yaml:"cookie,omitempty" default:""`
 	CityCode     string `yaml:"-"`
 	CustomerName string `yaml:"customerName,omitempty" default:""`
