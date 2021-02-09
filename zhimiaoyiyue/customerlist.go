@@ -3,6 +3,7 @@ package zhimiaoyiyue
 import (
 	"errors"
 	"fmt"
+	"log"
 	"zmyy_seckill/consts"
 	"zmyy_seckill/fetcher"
 	"zmyy_seckill/model"
@@ -18,7 +19,7 @@ func (e *ZMYYEngine) GetCustomerList() (int, error) {
 	headers["Referer"] = consts.Refer
 	bytes, err2 := fetcher.Fetch(newUrl, headers)
 	if err2 != nil {
-		fmt.Printf("GetCustomerList() err:%v\n", err2)
+		log.Printf("GetCustomerList() err:%v\n", err2)
 		return -1, err2
 	}
 	customers := model.CustomerList{}

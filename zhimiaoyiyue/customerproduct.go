@@ -3,6 +3,7 @@ package zhimiaoyiyue
 import (
 	"errors"
 	"fmt"
+	"log"
 	"strconv"
 	"zmyy_seckill/consts"
 	"zmyy_seckill/fetcher"
@@ -19,12 +20,13 @@ func (e *ZMYYEngine) GetCustomerProduct(customerId int) (int, error) {
 	headers["cookie"] = e.Conf.Cookie
 	bytes, err := fetcher.Fetch(url, headers)
 	if err != nil {
-		fmt.Printf("GetCustomerProduct() err : %v \n", err)
+		log.Printf("GetCustomerProduct() err : %v \n", err)
+		return -1, err
 	}
 	customerProducts := model.RootSource{}
 	err = util.Transfer2CustomerProductListModel(bytes, &customerProducts)
 	if err != nil {
-		fmt.Printf("GetCustomerProduct() err: %v\n ", err)
+		log.Printf("GetCustomerProduct() err: %v\n ", err)
 		return -1, err
 	}
 	fmt.Printf("正在查找疫苗信息：\n")

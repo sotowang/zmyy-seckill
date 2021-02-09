@@ -53,9 +53,8 @@ func Transfer2SubscribeDateDetailModel(jsonCont []byte, m *model.SubscribeDateDe
 }
 
 //将Base64文件（../imgs/veryfiPics）转成图片
-func Base64ToPics(prefix string) error {
-	path := GetCurrentPath()
-	data, err := ioutil.ReadFile(path + "/imgs/" + prefix)
+func Base64ToPics(filePath string) error {
+	data, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		fmt.Printf("Base64ToPics() can not load file err : %v\n", err)
 		return err
@@ -67,8 +66,8 @@ func Base64ToPics(prefix string) error {
 	}
 	d, _ := base64.StdEncoding.DecodeString(m.Dragon)
 	t, _ := base64.StdEncoding.DecodeString(m.Tiger)
-	fd, _ := os.OpenFile(path+"/imgs/"+prefix+"dragon.png", os.O_RDWR|os.O_CREATE, os.ModePerm)
-	ft, _ := os.OpenFile(path+"/imgs/"+prefix+"tiger.png", os.O_RDWR|os.O_CREATE, os.ModePerm)
+	fd, _ := os.OpenFile(filePath+"-dragon.png", os.O_RDWR|os.O_CREATE, os.ModePerm)
+	ft, _ := os.OpenFile(filePath+"-tiger.png", os.O_RDWR|os.O_CREATE, os.ModePerm)
 	defer fd.Close()
 	defer ft.Close()
 	_, err = fd.Write(d)
@@ -93,7 +92,7 @@ func CallPythonScript(tigerPath, dragonPath, procssPath string) (string, error) 
 	args := []string{tigerPath, dragonPath, procssPath}
 	out, err := exec.Command(exePath, args...).Output()
 	if err != nil {
-		fmt.Printf("滑块验证码识别失败！ 图片为： %s,  err: %v\n", dragonPath, err)
+		fmt.Printf("滑块验证码识别失败！ 图片为： %s,  err: %v\n", dragonPath, err.Error())
 		return "", err
 	}
 	str := strings.Replace(string(out), "\r", "", -1)
@@ -151,5 +150,5 @@ func DeleteFile(path ...string) {
 			fmt.Printf("删除文件%s失败：%v\n", v, err)
 		}
 	}
-	fmt.Printf("已删除验证码文件%s.\n", path[0])
+	//fmt.Printf("已删除验证码文件%s.\n", path[0])
 }

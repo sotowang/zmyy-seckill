@@ -1,18 +1,18 @@
 package fetcher
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
-	"time"
+	"strconv"
+	"zmyy_seckill/consts"
 	"zmyy_seckill/util"
 )
 
-var rateLimiter = time.Tick(1000 * time.Millisecond)
-
 func Fetch(url string, headers map[string]string) ([]byte, error) {
-	<-rateLimiter
+	consts.RequestLimitRate.Limit()
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 	for k, v := range headers {
@@ -33,7 +33,7 @@ func Fetch(url string, headers map[string]string) ([]byte, error) {
 	return contents, nil
 }
 func FetchBigResp(url string, headers map[string]string, prefix string) error {
-	<-rateLimiter
+	consts.RequestLimitRate.Limit()
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 	for k, v := range headers {
@@ -41,9 +41,10 @@ func FetchBigResp(url string, headers map[string]string, prefix string) error {
 	}
 	resp, err := client.Do(req)
 	defer resp.Body.Close()
-	if err != nil || resp.StatusCode != http.StatusOK {
-		fmt.Printf("wrong status code : %d\n", resp.StatusCode)
-		return err
+	b, err := strconv.Atoi(resp.Header.Get("Content-Length"))
+	if err != nil || resp.StatusCode != http.StatusOK || b < 100 {
+		fmt.Printf("获取验证码图片失败，请求可能被禁止！code： %d\n", resp.StatusCode)
+		return errors.New("获取验证码图片失败，请求可能被禁止！")
 	}
 	path := util.GetCurrentPath()
 	path = path + "/imgs/" + prefix

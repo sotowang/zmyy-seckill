@@ -6,7 +6,8 @@ import (
 )
 
 func TestBase64ToPics(t *testing.T) {
-	Base64ToPics()
+	prefix := "2021-02-18:08:00:00-09:00:00-2"
+	Base64ToPics(prefix)
 }
 func TestCallPythonScript(t *testing.T) {
 	dragonPath := "../imgs/dragon.png"
