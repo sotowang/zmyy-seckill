@@ -11,6 +11,7 @@ var mutex sync.Mutex
 
 //一次完整的秒杀流程
 func (e *ZMYYEngine) SecKill(ctx context.Context, cancel func(), dateDetail model.DateDetail, productId string) {
+	defer wg.Done()
 	picOk := make(chan bool, 1)
 	picOk <- true
 	verifyOk := make(chan string, 100)
@@ -50,7 +51,6 @@ func (e *ZMYYEngine) SecKill(ctx context.Context, cancel func(), dateDetail mode
 			if !ok {
 				picOk <- true
 			} else { //若成功，则退出Seckill
-				wg.Done()
 				cancel()
 				return
 			}

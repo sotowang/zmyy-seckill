@@ -33,7 +33,7 @@ func (l *LimitRate) Limit() bool {
 //SetRate 设置Rate
 func (l *LimitRate) SetRate(r int) {
 	l.rate = r
-	l.interval = 2 * time.Microsecond * time.Duration(1000*1000/l.rate)
+	l.interval = time.Microsecond * time.Duration(1.5*1000*1000/l.rate)
 }
 
 //GetRate 获取Rate
