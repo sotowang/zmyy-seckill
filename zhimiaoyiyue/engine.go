@@ -52,14 +52,21 @@ func (e *ZMYYEngine) Run() {
 			}
 		case dates := <-detailOk:
 			temDates := dates
+			visited := false
 			//获取这可预约日期的具体信息，包括疫苗数量等
 			for _, v := range dates.Dates {
+				if v.Enable == false {
+					continue
+				}
 				//获取该日期的具体信息
 				fmt.Printf("尝试获取%s 疫苗信息...\n", v.Date)
 				m, err := e.GetCustSubscribeDateDetail(v.Date, productId, customerId)
-				if err != nil {
-					detailOk <- temDates
+				if err != nil || len(m.DateDetails) == 0 {
+					fmt.Printf("未找到 %s 的可预约时间，尝试查找下一个时期...\n", v.Date)
+					//detailOk <- temDates
+					continue
 				} else {
+					visited = true
 					go func(dateDetails model.SubscribeDateDetail) {
 						for _, v := range dateDetails.DateDetails {
 							if v.Qty > 0 {
@@ -73,6 +80,9 @@ func (e *ZMYYEngine) Run() {
 						}
 					}(*m)
 				}
+			}
+			if !visited {
+				detailOk <- temDates
 			}
 		case <-ctx.Done():
 			goto END

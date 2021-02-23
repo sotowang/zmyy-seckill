@@ -31,7 +31,9 @@ func (e *ZMYYEngine) GetCustSubscribeDateAll(customerId, productId, month int) (
 	}
 	fmt.Printf("找到如下可预约日期:\n")
 	for index, date := range subsDates.Dates {
-		fmt.Printf("日期%d： %s\n", index+1, date.Date)
+		if date.Enable {
+			fmt.Printf("日期%d： %s\n", index+1, date.Date)
+		}
 	}
 	return &subsDates, nil
 }

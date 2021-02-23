@@ -1,7 +1,6 @@
 package zhimiaoyiyue
 
 import (
-	"encoding/json"
 	"fmt"
 	"testing"
 	"zmyy_seckill/model"
@@ -18,27 +17,6 @@ type Customer struct {
 }
 
 func Test_transfer(t *testing.T) {
-	s := `
-		{
-			"list":[
-				{
-					"id":1776,
-					"cname":"西安市未央区张家堡社区卫生服务中心"
-				}
-			],
-			"status":200
-		}
-`
-	list := CustomerList{}
-	err := json.Unmarshal([]byte(s), &list)
-
-	if err != nil {
-		t.Errorf("err: %v", err)
-	}
-	fmt.Printf("%v", list)
-
-	fmt.Println()
-
 	s1 := `
 			{
 				"list":[
@@ -63,16 +41,17 @@ func Test_transfer(t *testing.T) {
 			}
 `
 	b := []byte(s1)
-	customers := model.CustomerList{}
-	err = util.Transfer2CustomerListModel(b, &customers)
+	v, err := util.Transfer2Model(b, model.CustomerList{})
+	m := v.(model.CustomerList)
 	if err != nil {
 		t.Errorf("failed, err : %v", err)
 	}
-	fmt.Printf("%v", customers)
+	fmt.Printf("%v", m)
 }
 
 func Test_GetCustomerList(t *testing.T) {
 	e := ZMYYEngine{}
+	e.Init()
 	list, err := e.GetCustomerList()
 	if err != nil {
 		t.Errorf("err : %v", err)

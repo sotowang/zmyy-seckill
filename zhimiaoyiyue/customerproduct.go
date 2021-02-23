@@ -13,11 +13,18 @@ import (
 
 //获取换购疫苗的productId
 func (e *ZMYYEngine) GetCustomerProduct(customerId int) (int, error) {
-	url := consts.CustomerProductURL + "&id=" + strconv.Itoa(customerId)
+	url := consts.CustomerProductURL + "&id=" + strconv.Itoa(customerId) + "&lat=33.54256&lng=114.61165"
+	url = "https://cloud.cn2030.com/sc/wx/HandlerSubscribe.ashx?act=CustomerProduct&id=1921&lat=33.54256&lng=114.61165"
 	headers := make(map[string]string)
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
 	headers["cookie"] = e.Conf.Cookie
+	headers["Connection"] = consts.Connection
+	headers["Host"] = "cloud.cn2030.com"
+	headers["content-type"] = "application/json"
+	zftsl, _ := util.GetZFTSL()
+	headers["zftsl"] = zftsl
+
 	bytes, err := fetcher.Fetch(url, headers)
 	if err != nil {
 		log.Printf("GetCustomerProduct() err : %v \n", err)

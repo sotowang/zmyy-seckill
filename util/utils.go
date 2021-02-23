@@ -14,6 +14,19 @@ import (
 	"zmyy_seckill/model"
 )
 
+func Transfer2Model(jsonCont []byte, m interface{}) (interface{}, error) {
+	switch m.(type) {
+	case model.CustomerList:
+		res := &model.CustomerList{}
+		err := json.Unmarshal(jsonCont, res)
+		if err != nil {
+			fmt.Printf("Transfer2Model err:%v\n", err)
+			return nil, err
+		}
+		return *res, nil
+	}
+	return nil, nil
+}
 func Transfer2CustomerListModel(jsonCont []byte, cumtomers *model.CustomerList) error {
 	err := json.Unmarshal(jsonCont, &cumtomers)
 	if err != nil {

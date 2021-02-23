@@ -8,10 +8,10 @@ import (
 
 var e = ZMYYEngine{}
 var dateDetail = model.DateDetail{
-	Date:      "2021-02-18",
+	Date:      "2021-02-24",
 	StartTime: "08:00",
-	EndTime:   "09:00",
-	Mxid:      "AAAAAOJdAAAqYjQB",
+	EndTime:   "11:30",
+	Mxid:      "AAAAAM9YAAAwYjQB",
 }
 
 func init() {
@@ -24,7 +24,7 @@ func TestZMYYEngine_CaptchaVerify(t *testing.T) {
 	if err != nil {
 		t.Errorf("err: %v\n", err)
 	}
-	fmt.Printf("%v", m)
+	fmt.Printf("guid: %v \n", m)
 }
 func TestZMYYEngine_GetVerifyPic(t *testing.T) {
 	path, err := e.GetVerifyPic(dateDetail)

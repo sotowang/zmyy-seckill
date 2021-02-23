@@ -17,6 +17,8 @@ func (e *ZMYYEngine) GetCustomerList() (int, error) {
 	headers := make(map[string]string)
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
+	zftsl, _ := util.GetZFTSL()
+	headers["zftsl"] = zftsl
 	bytes, err2 := fetcher.Fetch(newUrl, headers)
 	if err2 != nil {
 		log.Printf("GetCustomerList() err:%v\n", err2)
