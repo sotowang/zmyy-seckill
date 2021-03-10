@@ -14,7 +14,7 @@ import (
 //获取换购疫苗的productId
 func (e *ZMYYEngine) GetCustomerProduct(customerId int) (int, error) {
 	url := consts.CustomerProductURL + "&id=" + strconv.Itoa(customerId) + "&lat=33.54256&lng=114.61165"
-	url = "https://cloud.cn2030.com/sc/wx/HandlerSubscribe.ashx?act=CustomerProduct&id=1921&lat=33.54256&lng=114.61165"
+	//url = "https://cloud.cn2030.com/sc/wx/HandlerSubscribe.ashx?act=CustomerProduct&id=1921&lat=33.54256&lng=114.61165"
 	headers := make(map[string]string)
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
