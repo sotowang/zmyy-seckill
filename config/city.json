@@ -6,19 +6,19 @@
       "children": [
         {
           "name": "北京市",
-          "value": "1101"
+          "value": "1100"
         },
         {
           "name": "天津市",
-          "value": "1201"
+          "value": "1200"
         },
         {
           "name": "上海市",
-          "value": "3101"
+          "value": "3100"
         },
         {
           "name": "重庆市",
-          "value": "5001"
+          "value": "5000"
         }
       ]
     },
