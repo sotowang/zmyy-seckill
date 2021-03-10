@@ -18,6 +18,7 @@ func (e *ZMYYEngine) GetVerifyPic(dateDetail model.DateDetail) (path string, err
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
 	headers["Cookie"] = e.Conf.Cookie
+	headers["Connection"] = consts.Connection
 	zftsl, _ := util.GetZFTSL()
 	headers["zftsl"] = zftsl
 	prefix := dateDetail.Date + "-" + strings.Replace(dateDetail.StartTime, ":", "_", -1) + "-" + strings.Replace(dateDetail.EndTime, ":", "_", -1)
@@ -51,6 +52,7 @@ func (e *ZMYYEngine) CaptchaVerify(prefix string) (guid string, err error) {
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
 	headers["Cookie"] = e.Conf.Cookie
+	headers["Connection"] = consts.Connection
 	zftsl, err := util.GetZFTSL()
 	headers["zftsl"] = zftsl
 	bytes, err := fetcher.Fetch(url, headers)
