@@ -152,7 +152,9 @@ func GetCurrentPath() string {
 	const pathRe = `([0-9a-zA-z:]*[0-9a-zA-Z/]+/zmyy_seckill)`
 	compile := regexp.MustCompile(pathRe)
 	match := compile.FindSubmatch([]byte(dir))
-	dir = string(match[1])
+	if len(match) > 1 {
+		dir = string(match[1])
+	}
 	return dir
 }
 
