@@ -148,13 +148,13 @@ func GetCurrentPath() string {
 		fmt.Printf("Get current process path failed . err : %v \n", err)
 		return ""
 	}
-	dir = strings.Replace(dir, "\\", "/", -1)
-	const pathRe = `([0-9a-zA-z:]*[0-9a-zA-Z/]+/zmyy_seckill)`
-	compile := regexp.MustCompile(pathRe)
-	match := compile.FindSubmatch([]byte(dir))
-	if len(match) > 1 {
-		dir = string(match[1])
-	}
+	//dir = strings.Replace(dir, "\\", "/", -1)
+	//const pathRe = `([0-9a-zA-z:]*[0-9a-zA-Z/]+/zmyy_seckill)`
+	//compile := regexp.MustCompile(pathRe)
+	//match := compile.FindSubmatch([]byte(dir))
+	//if len(match) > 1 {
+	//	dir = string(match[1])
+	//}
 	return dir
 }
 
