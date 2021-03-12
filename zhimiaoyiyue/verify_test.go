@@ -8,10 +8,10 @@ import (
 
 var e = ZMYYEngine{}
 var dateDetail = model.DateDetail{
-	Date:      "2021-02-24",
+	Date:      "2021-03-24",
 	StartTime: "08:00",
 	EndTime:   "11:30",
-	Mxid:      "AAAAAM9YAAAwYjQB",
+	Mxid:      "AAAAAJVjAACUYjQB",
 }
 
 func init() {

@@ -22,6 +22,7 @@ func (e *ZMYYEngine) GetCustSubscribeDateAll(customerId, productId, month int) (
 	bytes, err := fetcher.Fetch(url, headers)
 	if err != nil {
 		fmt.Printf("GetCustSubscribeDateAll() err : %v \n", err)
+		return nil, err
 	}
 	subsDates := model.SubscribeDate{}
 	err = util.Transfer2SubscribeDateModel(bytes, &subsDates)

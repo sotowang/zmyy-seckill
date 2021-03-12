@@ -19,6 +19,7 @@ type SecKill interface {
 }
 
 var wg sync.WaitGroup
+var wg2 sync.WaitGroup
 
 func (e *ZMYYEngine) Init() {
 	var c config.RootConf
@@ -29,11 +30,8 @@ func (e *ZMYYEngine) Init() {
 	e.Conf = conf
 }
 
-func (e *ZMYYEngine) Run() {
-	//获取指定地区接种地点的cutomerId
-	customerId, _ := e.GetCustomerList()
-	//获取指定接种地点的productId
-	productId, _ := e.GetCustomerProduct(customerId)
+func (e *ZMYYEngine) Run(customerId, productId int) {
+
 	dateOk := make(chan bool, 1)
 	detailOk := make(chan *model.SubscribeDate, 100)
 	//dateChan := make(chan model.DateDetail, 100)
@@ -45,31 +43,34 @@ func (e *ZMYYEngine) Run() {
 		case <-dateOk:
 			subscribeDates, err := e.GetCustSubscribeDateAll(customerId, productId, e.Conf.Month)
 			if err != nil || len(subscribeDates.Dates) == 0 {
-				fmt.Printf("目前可预约日期：%d个,尝试重新获取日期...\n", len(subscribeDates.Dates))
+				if err == nil {
+					fmt.Printf("目前可预约日期：%d个,尝试重新获取日期...\n", len(subscribeDates.Dates))
+				}
 				dateOk <- true
 			} else {
 				detailOk <- subscribeDates
 			}
 		case dates := <-detailOk:
-			temDates := dates
+			//temDates := dates
 			visited := false
 			//获取这可预约日期的具体信息，包括疫苗数量等
 			for _, v := range dates.Dates {
 				if v.Enable == false {
 					continue
 				}
+				wg2.Wait()
 				//获取该日期的具体信息
-				fmt.Printf("尝试获取%s 疫苗信息...\n", v.Date)
+				fmt.Printf("尝试获取 %s 疫苗信息...\n", v.Date)
 				m, err := e.GetCustSubscribeDateDetail(v.Date, productId, customerId)
 				if err != nil || len(m.DateDetails) == 0 {
-					fmt.Printf("未找到 %s 的可预约时间，尝试查找下一个时期...\n", v.Date)
+					fmt.Printf("未找到 %s 的可预约时间，尝试查找下一个时间...\n", v.Date)
 					//detailOk <- temDates
 					continue
 				} else {
-					visited = true
 					go func(dateDetails model.SubscribeDateDetail) {
 						for _, v := range dateDetails.DateDetails {
 							if v.Qty > 0 {
+								visited = true
 								v.Date = dateDetails.Date
 								wg.Add(1)
 								go func(detail model.DateDetail) {
@@ -82,7 +83,9 @@ func (e *ZMYYEngine) Run() {
 				}
 			}
 			if !visited {
-				detailOk <- temDates
+				fmt.Printf("未找到可预约时间，尝试重新获取可预约日期...\n")
+				//detailOk <- temDates
+				dateOk <- true
 			}
 		case <-ctx.Done():
 			goto END

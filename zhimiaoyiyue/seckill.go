@@ -22,10 +22,12 @@ func (e *ZMYYEngine) SecKill(ctx context.Context, cancel func(), dateDetail mode
 			return
 		case <-picOk:
 			mutex.Lock()
+			wg2.Add(1)
 			//1.获取验证码图片
 			fmt.Printf("正在获取验证码图片：%s  %s-%s\n", dateDetail.Date, dateDetail.StartTime, dateDetail.EndTime)
 			path, err := e.GetVerifyPic(dateDetail)
 			if err != nil || path == "" {
+				wg2.Done()
 				mutex.Unlock()
 				picOk <- true
 			} else {
@@ -54,7 +56,6 @@ func (e *ZMYYEngine) SecKill(ctx context.Context, cancel func(), dateDetail mode
 				cancel()
 				return
 			}
-
 		default:
 		}
 	}

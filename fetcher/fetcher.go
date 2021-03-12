@@ -13,16 +13,17 @@ import (
 
 func Fetch(url string, headers map[string]string) ([]byte, error) {
 	consts.RequestLimitRate.Limit()
+	fmt.Printf("正在发起请求.... url: %s\n", url)
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 	for k, v := range headers {
 		req.Header.Set(k, v)
 	}
 	resp, err := client.Do(req)
-	defer resp.Body.Close()
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 	//如果有重定向错误，则重定向
 	if resp.Request.Response != nil && resp.Request.Response.StatusCode == http.StatusFound {
 		url = consts.Host + resp.Request.Response.Header.Get("Location")
