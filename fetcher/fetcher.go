@@ -1,6 +1,7 @@
 package fetcher
 
 import (
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -14,7 +15,12 @@ import (
 func Fetch(url string, headers map[string]string) ([]byte, error) {
 	consts.RequestLimitRate.Limit()
 	fmt.Printf("正在发起请求.... url: %s\n", url)
-	client := &http.Client{}
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client := &http.Client{
+		Transport: tr,
+	}
 	req, err := http.NewRequest("GET", url, nil)
 	for k, v := range headers {
 		req.Header.Set(k, v)
