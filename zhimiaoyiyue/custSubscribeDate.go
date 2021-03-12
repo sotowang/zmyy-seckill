@@ -19,6 +19,7 @@ func (e *ZMYYEngine) GetCustSubscribeDateAll(customerId, productId, month int) (
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
 	headers["cookie"] = e.Conf.Cookie
+	headers["Connection"] = consts.Connection
 	bytes, err := fetcher.Fetch(url, headers)
 	if err != nil {
 		fmt.Printf("GetCustSubscribeDateAll() err : %v \n", err)

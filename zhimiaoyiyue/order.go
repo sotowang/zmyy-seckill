@@ -35,7 +35,7 @@ func (e *ZMYYEngine) SaveOrder(dateDetail model.DateDetail, productId string, gu
 	fmt.Printf("订单 %s: %s-%s 提交成功 \n", dateDetail.Date, dateDetail.StartTime, dateDetail.EndTime)
 	//获取订单状态
 	ok, _, err = e.GetOrderStatus(dateDetail)
-	return
+	return ok, err
 }
 
 /**

@@ -42,7 +42,7 @@ func (e *ZMYYEngine) CaptchaVerify(prefix string) (guid string, err error) {
 	tigerPath, dragonPath, processPath := prefix+"-tiger.png", prefix+"-dragon.png", prefix+"-process.png"
 	//2.图片验证码识别
 	x, err := util.CallPythonScript(tigerPath, dragonPath, processPath)
-	defer util.DeleteFile(tigerPath, dragonPath, processPath, prefix)
+
 	if err != nil {
 		return "", err
 	}
@@ -61,9 +61,11 @@ func (e *ZMYYEngine) CaptchaVerify(prefix string) (guid string, err error) {
 	}
 	m := &model.VerifyResultModel{}
 	err = util.Transfer2VerifyResultModel(bytes, m)
+	defer util.DeleteFile(tigerPath, dragonPath, processPath, prefix)
 	if err != nil || m.Status != 200 || m.Guid == "" {
 		fmt.Printf("CaptchaVerify() 验证码%s验证失败，guid=%s ; err:%v; %s\n", prefix, m.Guid, err, bytes)
 		return "", err
 	}
+
 	return m.Guid, nil
 }

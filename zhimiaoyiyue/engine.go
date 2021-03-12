@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"sync"
 	"zmyy_seckill/config"
+	"zmyy_seckill/consts"
 	"zmyy_seckill/model"
 )
 
@@ -47,25 +48,28 @@ func (e *ZMYYEngine) Run(customerId, productId int) {
 			break
 		}
 	}
+	//获取可预约日期内疫苗信息
 	for {
 		select {
-		case dates := <-detailOk:
-			//temDates := dates
+		case <-ctx.Done():
+			goto END
+		default:
 			visited := false
-			//获取这可预约日期的具体信息，包括疫苗数量等
-			for _, v := range dates.Dates {
+			for _, v := range subscribeDates.Dates {
 				if v.Enable == false {
 					continue
 				}
 				wg2.Wait()
-				//获取该日期的具体信息
+				if consts.Stop {
+					goto END
+				}
 				fmt.Printf("尝试获取 %s 疫苗信息...\n", v.Date)
 				m, err := e.GetCustSubscribeDateDetail(v.Date, productId, customerId)
 				if err != nil || len(m.DateDetails) == 0 {
 					fmt.Printf("未找到 %s 的可预约时间，尝试查找下一个时间...\n", v.Date)
 					continue
 				} else {
-					go func(dateDetails model.SubscribeDateDetail) {
+					func(dateDetails model.SubscribeDateDetail) {
 						for _, v := range dateDetails.DateDetails {
 							if v.Qty > 0 {
 								visited = true
@@ -85,9 +89,6 @@ func (e *ZMYYEngine) Run(customerId, productId int) {
 				fmt.Printf("在所找到的可预约日期中，没有可预约的疫苗了（说明已经被抢完了）...\n")
 				goto END
 			}
-		case <-ctx.Done():
-			goto END
-		default:
 		}
 	}
 	wg.Wait()
