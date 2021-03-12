@@ -13,19 +13,20 @@ type RootConf struct {
 }
 
 type CustomerConf struct {
-	Province     string `yaml:province,omitempty default:""`
-	City         string `yaml:"city,omitempty" default:""`
-	District     string `yaml:"district,omitempty" default:""`
-	ProductName  string `yaml:"productName,omitempty" default:1`
-	Birthday     string `yaml:"birthday,omitempty" default:""`
-	Tel          string `yaml:"tel,omitempty" default:""`
-	Sex          int    `yaml:"sex,omitempty" default:1`
-	Name         string `yaml:"name,omitempty" default:""`
-	IdCard       string `yaml:"idcard,omitempty" default:""`
-	Cookie       string `yaml:"cookie,omitempty" default:""`
-	CityCode     string `yaml:"-"`
-	CustomerName string `yaml:"customerName,omitempty" default:""`
-	Month        int    `yaml:"month,omitempty" default:202102`
+	Province      string `yaml:province,omitempty default:""`
+	City          string `yaml:"city,omitempty" default:""`
+	District      string `yaml:"district,omitempty" default:""`
+	ProductName   string `yaml:"productName,omitempty" default:1`
+	Birthday      string `yaml:"birthday,omitempty" default:""`
+	Tel           string `yaml:"tel,omitempty" default:""`
+	Sex           int    `yaml:"sex,omitempty" default:1`
+	Name          string `yaml:"name,omitempty" default:""`
+	IdCard        string `yaml:"idcard,omitempty" default:""`
+	Cookie        string `yaml:"cookie,omitempty" default:""`
+	CityCode      string `yaml:"-"`
+	CustomerName  string `yaml:"customerName,omitempty" default:""`
+	Month         int    `yaml:"month,omitempty" default:202102`
+	SubscribeTime string `yaml:"subscribeTime,omitempty" default:""`
 }
 
 func (c *RootConf) GetConf() (CustomerConf, error) {

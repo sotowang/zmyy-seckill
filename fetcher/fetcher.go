@@ -27,7 +27,7 @@ func Fetch(url string, headers map[string]string) ([]byte, error) {
 	//如果有重定向错误，则重定向
 	if resp.Request.Response != nil && resp.Request.Response.StatusCode == http.StatusFound {
 		url = consts.Host + resp.Request.Response.Header.Get("Location")
-		fmt.Printf("出现302错误，尝试重定向网址...\n")
+		//fmt.Printf("出现302错误，尝试重定向网址...\n")
 		return Fetch(url, headers)
 	}
 	if resp.StatusCode != http.StatusOK {

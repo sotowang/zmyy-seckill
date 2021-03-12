@@ -8,18 +8,20 @@ zhiyiyuemiao:
   #  【必填】抢购疫苗的类型（必填），务必与小程序上的名称一致
   productName: "九价人乳头瘤病毒疫苗"
   #  【必填】预约地点名称(必填),务必与小程序上的名称一致
-  customerName: "西安碑林区太乙路社区卫生服务中心(建东街3号)"
+  customerName: "西安市鄠邑区人民医院沣京路接种门诊"
+  #  【必填】预约时间
+  subscribeTime: "2021-03-12 13:30:00"
   #  【必填】疫苗可预约的月份
   month: 202103
   #  【必填】生日
-  birthday: "1995-03-01"
+  birthday: "1995-12-09"
   #  【必填】电话
-  tel: "17777777777"
+  tel: ""
   #  【必填】性别：1为男性 2为女性
-  sex: 1
+  sex: 2
   #  【必填】姓名
-  name: "王小二"
+  name: ""
   #  【必填】身份证号
-  idcard: "411111111111111111"
+  idcard: ""
   #  【必填】这个Cookie需要抓包获取 【有效期为5分钟或更久】
-  cookie: "ASP.NET_SessionId=5knsj3n5bwe5ic25sixxp5ub"
+  cookie: "ASP.NET_SessionId="

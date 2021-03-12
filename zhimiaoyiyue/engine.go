@@ -31,25 +31,24 @@ func (e *ZMYYEngine) Init() {
 }
 
 func (e *ZMYYEngine) Run(customerId, productId int) {
-
-	dateOk := make(chan bool, 1)
 	detailOk := make(chan *model.SubscribeDate, 100)
-	//dateChan := make(chan model.DateDetail, 100)
 	ctx, cancel := context.WithCancel(context.Background())
-	dateOk <- true
+	var subscribeDates *model.SubscribeDate
+	//获取疫苗可预约的日期
+	for {
+		var err error
+		subscribeDates, err = e.GetCustSubscribeDateAll(customerId, productId, e.Conf.Month)
+		if err != nil || len(subscribeDates.Dates) == 0 {
+			if len(subscribeDates.Dates) == 0 {
+				fmt.Printf("目前可预约日期：%d个,尝试重新获取日期...\n", len(subscribeDates.Dates))
+			}
+		} else {
+			detailOk <- subscribeDates
+			break
+		}
+	}
 	for {
 		select {
-		//获取可预约的日期
-		case <-dateOk:
-			subscribeDates, err := e.GetCustSubscribeDateAll(customerId, productId, e.Conf.Month)
-			if err != nil || len(subscribeDates.Dates) == 0 {
-				if err == nil {
-					fmt.Printf("目前可预约日期：%d个,尝试重新获取日期...\n", len(subscribeDates.Dates))
-				}
-				dateOk <- true
-			} else {
-				detailOk <- subscribeDates
-			}
 		case dates := <-detailOk:
 			//temDates := dates
 			visited := false
@@ -64,7 +63,6 @@ func (e *ZMYYEngine) Run(customerId, productId int) {
 				m, err := e.GetCustSubscribeDateDetail(v.Date, productId, customerId)
 				if err != nil || len(m.DateDetails) == 0 {
 					fmt.Printf("未找到 %s 的可预约时间，尝试查找下一个时间...\n", v.Date)
-					//detailOk <- temDates
 					continue
 				} else {
 					go func(dateDetails model.SubscribeDateDetail) {
@@ -84,8 +82,7 @@ func (e *ZMYYEngine) Run(customerId, productId int) {
 			}
 			if !visited {
 				fmt.Printf("未找到可预约时间，尝试重新获取可预约日期...\n")
-				//detailOk <- temDates
-				dateOk <- true
+				detailOk <- subscribeDates
 			}
 		case <-ctx.Done():
 			goto END
