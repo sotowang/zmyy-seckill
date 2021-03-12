@@ -33,9 +33,10 @@ func (e *ZMYYEngine) GetCustomerList() (int, error) {
 	for k, v := range customers.Customers {
 		fmt.Printf("第 %d个接种地：%s\n", k+1, v.Cname)
 		if v.Cname == e.Conf.CustomerName {
-			fmt.Printf("选中第 %d个接种地：%s，其customerId为 %d\n", k+1, v.Cname, v.Id)
+			fmt.Printf("====选中第 %d个接种地：%s，其customerId为 %d====\n", k+1, v.Cname, v.Id)
 			return v.Id, nil
 		}
 	}
+	fmt.Printf("未找到指定接种地，请对比配置文件接种地是否正确！\n")
 	return -1, errors.New("未找到指定接种地，请对比配置文件接种地是否正确！")
 }

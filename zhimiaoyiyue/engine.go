@@ -80,9 +80,10 @@ func (e *ZMYYEngine) Run(customerId, productId int) {
 					}(*m)
 				}
 			}
+			//如果没进入秒杀程序，说明已被抢完了
 			if !visited {
-				fmt.Printf("未找到可预约时间，尝试重新获取可预约日期...\n")
-				detailOk <- subscribeDates
+				fmt.Printf("在所找到的可预约日期中，没有可预约的疫苗了（说明已经被抢完了）...\n")
+				goto END
 			}
 		case <-ctx.Done():
 			goto END
@@ -91,7 +92,7 @@ func (e *ZMYYEngine) Run(customerId, productId int) {
 	}
 	wg.Wait()
 END:
-	fmt.Printf("订单抢购成功！Press any key to exit...\n")
+	fmt.Printf("按任意键退出程序...\n")
 	b := make([]byte, 1)
 	os.Stdin.Read(b)
 }

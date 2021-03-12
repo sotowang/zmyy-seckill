@@ -14,7 +14,6 @@ import (
 //获取换购疫苗的productId
 func (e *ZMYYEngine) GetCustomerProduct(customerId int) (int, error) {
 	url := consts.CustomerProductURL + "&id=" + strconv.Itoa(customerId) + "&lat=33.54256&lng=114.61165"
-	//url = "https://cloud.cn2030.com/sc/wx/HandlerSubscribe.ashx?act=CustomerProduct&id=1921&lat=33.54256&lng=114.61165"
 	headers := make(map[string]string)
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
@@ -40,17 +39,17 @@ func (e *ZMYYEngine) GetCustomerProduct(customerId int) (int, error) {
 	var selected model.CustomerProduct
 	var contains bool
 	for k, v := range customerProducts.CustomerProducts {
-		fmt.Printf("第 %d个疫苗：%s productId: %d\n", k+1, v.Text, v.Id)
+		fmt.Printf("第 %d 个疫苗：%s productId: %d\n", k+1, v.Text, v.Id)
 		if v.Text == e.Conf.ProductName {
 			selected = v
 			contains = true
 		}
 	}
 	if contains {
-		fmt.Printf("选中疫苗：%s，其productId为 %d\n", selected.Text, selected.Id)
+		fmt.Printf("====选中疫苗：%s ，其productId为 %d====\n", selected.Text, selected.Id)
 		return selected.Id, nil
 	}
-
+	fmt.Printf("未找到指定疫苗，请对比配置文件疫苗信息是否正确！\n")
 	return -1, errors.New("未找到指定疫苗，请对比配置文件疫苗信息是否正确！")
 
 }

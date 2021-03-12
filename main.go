@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 	"zmyy_seckill/consts"
 	"zmyy_seckill/zhimiaoyiyue"
 )
@@ -23,12 +24,13 @@ func main() {
 			productId, _ = e.GetCustomerProduct(customerId)
 		}
 	}
-	//loc, _ := time.LoadLocation("Local")
-	//timeLayout := "2006-01-02 15:04:05"
-	//subsTime, _ := time.ParseInLocation(timeLayout, e.Conf.SubscribeTime, loc)
-	//now := time.Now()
-	//timer := time.NewTimer(subsTime.Sub(now))
-	//<-timer.C
+	loc, _ := time.LoadLocation("Local")
+	timeLayout := "2006-01-02 15:04:05"
+	subsTime, _ := time.ParseInLocation(timeLayout, e.Conf.SubscribeTime, loc)
+	now := time.Now()
+	timer := time.NewTimer(subsTime.Sub(now))
+	fmt.Printf("倒计时中，将在 %v 时运行程序...\n", subsTime)
+	<-timer.C
 	e.Run(customerId, productId)
 	fmt.Println("运行结束.....")
 }

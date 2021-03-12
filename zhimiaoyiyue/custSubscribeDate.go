@@ -30,11 +30,23 @@ func (e *ZMYYEngine) GetCustSubscribeDateAll(customerId, productId, month int) (
 		fmt.Printf("GetCustSubscribeDateAll() err: %v\n ", err)
 		return nil, err
 	}
-	fmt.Printf("找到如下可预约日期:\n")
-	for index, date := range subsDates.Dates {
-		if date.Enable {
-			fmt.Printf("日期%d： %s\n", index+1, date.Date)
+
+	if len(subsDates.Dates) == 0 {
+		fmt.Printf("GetCustSubscribeDateAll:未找到可预约的日期，将重新查找...\n")
+	} else {
+		cnt := 0
+		for index, date := range subsDates.Dates {
+			if date.Enable {
+				cnt++
+				fmt.Printf("日期%d： %s\n", index+1, date.Date)
+			}
 		}
+		if cnt == 0 {
+			fmt.Printf("未找到可预约的日期，将重新查找...\n")
+		} else {
+			fmt.Printf("共找到 %d 可预约的日期\n", cnt)
+		}
+
 	}
 	return &subsDates, nil
 }

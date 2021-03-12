@@ -48,12 +48,13 @@ func (e *ZMYYEngine) SecKill(ctx context.Context, cancel func(), dateDetail mode
 			//3.下单
 			fmt.Printf("验证码图片:%s  %s-%s 识别成功，尝试下单中...\n", dateDetail.Date, dateDetail.StartTime, dateDetail.EndTime)
 			ok, _ := e.SaveOrder(dateDetail, productId, guid)
-			mutex.Unlock()
 			//若未成功下单，则重新走获取验证码流程
 			if !ok {
 				picOk <- true
+				mutex.Unlock()
 			} else { //若成功，则退出Seckill
 				cancel()
+				mutex.Unlock()
 				return
 			}
 		default:

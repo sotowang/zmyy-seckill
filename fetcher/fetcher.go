@@ -47,7 +47,12 @@ func Fetch(url string, headers map[string]string) ([]byte, error) {
 }
 func FetchBigResp(url string, headers map[string]string, prefix string) error {
 	consts.RequestLimitRate.Limit()
-	client := &http.Client{}
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client := &http.Client{
+		Transport: tr,
+	}
 	req, err := http.NewRequest("GET", url, nil)
 	for k, v := range headers {
 		req.Header.Set(k, v)
@@ -59,12 +64,12 @@ func FetchBigResp(url string, headers map[string]string, prefix string) error {
 		fmt.Printf("出现302错误，尝试重定向网址...\n")
 		return FetchBigResp(url, headers, prefix)
 	}
-	defer resp.Body.Close()
 	b, err := strconv.Atoi(resp.Header.Get("Content-Length"))
 	if err != nil || resp.StatusCode != http.StatusOK || b < 100 {
 		fmt.Printf("获取验证码图片失败，请求可能被禁止！code： %d\n", resp.StatusCode)
 		return errors.New("获取验证码图片失败，请求可能被禁止！")
 	}
+	defer resp.Body.Close()
 	path := util.GetCurrentPath()
 	path = path + "/imgs/" + prefix
 	f, _ := os.Create(path)

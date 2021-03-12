@@ -1,27 +1,27 @@
 zhiyiyuemiao:
   #  【必填】省
-  province: "陕西省"
+  province: "河南省"
   #  【选填】市
-  city: "西安市"
+  city: "郑州市"
   #  区（可以不用填，不打算开发此功能）
   district: ""
   #  【必填】抢购疫苗的类型（必填），务必与小程序上的名称一致
-  productName: "九价人乳头瘤病毒疫苗"
+  productName: "二价人乳头瘤病毒疫苗(大肠杆菌)"
   #  【必填】预约地点名称(必填),务必与小程序上的名称一致
-  customerName: "西安市鄠邑区人民医院沣京路接种门诊"
+  customerName: "郑州市郑东新区博学路社区卫生服务中心"
   #  【必填】预约时间
-  subscribeTime: "2021-03-12 13:30:00"
+  subscribeTime: "2021-03-12 15:08:00"
   #  【必填】疫苗可预约的月份
   month: 202103
   #  【必填】生日
   birthday: "1995-12-09"
   #  【必填】电话
-  tel: ""
+  tel: "13228123912"
   #  【必填】性别：1为男性 2为女性
-  sex: 2
+  sex: 1
   #  【必填】姓名
-  name: ""
+  name: "毛培杰"
   #  【必填】身份证号
-  idcard: ""
+  idcard: "412723199503012532"
   #  【必填】这个Cookie需要抓包获取 【有效期为5分钟或更久】
-  cookie: "ASP.NET_SessionId="
+  cookie: "ASP.NET_SessionId=tnam0ae3sy4kdwp2qvnx5ewq"

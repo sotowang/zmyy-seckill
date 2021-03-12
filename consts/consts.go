@@ -8,7 +8,7 @@ const (
 	UserAgent  = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat"
 	Refer      = "https://servicewechat.com/wx2c7f0f3c30d99445/72/page-frame.html"
 	Connection = "keep-alive"
-	Host       = "https://yun.cn2030.com"
+	Host       = "https://106.13.187.42"
 	//某地区医院列表URL
 	CustomerListUrl = Host + "/sc/wx/HandlerSubscribe.ashx?act=CustomerList"
 	//授权URL
