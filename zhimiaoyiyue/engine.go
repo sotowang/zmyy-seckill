@@ -40,9 +40,7 @@ func (e *ZMYYEngine) Run(customerId, productId int) {
 		var err error
 		subscribeDates, err = e.GetCustSubscribeDateAll(customerId, productId, e.Conf.Month)
 		if err != nil || len(subscribeDates.Dates) == 0 {
-			if len(subscribeDates.Dates) == 0 {
-				fmt.Printf("目前可预约日期：%d个,尝试重新获取日期...\n", len(subscribeDates.Dates))
-			}
+			fmt.Printf("未获取到可预约日期,尝试重新获取...\n")
 		} else {
 			detailOk <- subscribeDates
 			break
