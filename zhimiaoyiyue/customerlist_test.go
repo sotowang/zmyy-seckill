@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 	"zmyy_seckill/model"
-	"zmyy_seckill/util"
+	"zmyy_seckill/utils"
 )
 
 type CustomerList struct {
@@ -41,7 +41,7 @@ func Test_transfer(t *testing.T) {
 			}
 `
 	b := []byte(s1)
-	v, err := util.Transfer2Model(b, model.CustomerList{})
+	v, err := utils.Transfer2Model(b, model.CustomerList{})
 	m := v.(model.CustomerList)
 	if err != nil {
 		t.Errorf("failed, err : %v", err)

@@ -7,17 +7,17 @@ import (
 	"zmyy_seckill/consts"
 	"zmyy_seckill/fetcher"
 	"zmyy_seckill/model"
-	"zmyy_seckill/util"
+	"zmyy_seckill/utils"
 )
 
 //获取指定接种地ID
 func (e *ZMYYEngine) GetCustomerList() (int, error) {
 	params := "[\"" + e.Conf.Province + "\",\"" + e.Conf.City + "\",\"" + e.Conf.District + "\"]"
-	newUrl := consts.CustomerListUrl + "&city=" + util.UrlEncode(params) + "&id=0&cityCode=" + e.Conf.CityCode + "&product=0"
+	newUrl := consts.CustomerListUrl + "&city=" + utils.UrlEncode(params) + "&id=0&cityCode=" + e.Conf.CityCode + "&product=0"
 	headers := make(map[string]string)
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
-	zftsl, _ := util.GetZFTSL()
+	zftsl, _ := utils.GetZFTSL()
 	headers["zftsl"] = zftsl
 	bytes, err2 := fetcher.Fetch(newUrl, headers)
 	if err2 != nil {
@@ -25,7 +25,7 @@ func (e *ZMYYEngine) GetCustomerList() (int, error) {
 		return -1, err2
 	}
 	customers := model.CustomerList{}
-	err2 = util.Transfer2CustomerListModel(bytes, &customers)
+	err2 = utils.Transfer2CustomerListModel(bytes, &customers)
 	if err2 != nil {
 		return -1, err2
 	}

@@ -6,7 +6,7 @@ import (
 	"zmyy_seckill/consts"
 	"zmyy_seckill/fetcher"
 	"zmyy_seckill/model"
-	"zmyy_seckill/util"
+	"zmyy_seckill/utils"
 )
 
 /**
@@ -18,17 +18,19 @@ func (e *ZMYYEngine) GetVerifyPic(dateDetail model.DateDetail) (path string, err
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
 	headers["Cookie"] = e.Conf.Cookie
-	headers["Connection"] = consts.Connection
-	zftsl, _ := util.GetZFTSL()
+	//headers["Connection"] = consts.Connection
+	headers["content-type"] = consts.ContentType
+	headers["Accept-Encoding"] = consts.AcceptEncoding
+	zftsl, _ := utils.GetZFTSL()
 	headers["zftsl"] = zftsl
 	prefix := dateDetail.Date + "-" + strings.Replace(dateDetail.StartTime, ":", "_", -1) + "-" + strings.Replace(dateDetail.EndTime, ":", "_", -1)
 	err = fetcher.FetchBigResp(url, headers, prefix)
 	if err != nil {
 		return "", err
 	}
-	path = util.GetCurrentPath() + "/imgs/"
+	path = utils.GetCurrentPath() + "/imgs/"
 	//Base64转图片
-	err = util.Base64ToPics(path + prefix)
+	err = utils.Base64ToPics(path + prefix)
 	if err != nil {
 		return "", err
 	}
@@ -41,7 +43,7 @@ func (e *ZMYYEngine) GetVerifyPic(dateDetail model.DateDetail) (path string, err
 func (e *ZMYYEngine) CaptchaVerify(prefix string) (guid string, err error) {
 	tigerPath, dragonPath, processPath := prefix+"-tiger.png", prefix+"-dragon.png", prefix+"-process.png"
 	//2.图片验证码识别
-	x, err := util.CallPythonScript(tigerPath, dragonPath, processPath)
+	x, err := utils.CallPythonScript(tigerPath, dragonPath, processPath)
 
 	if err != nil {
 		return "", err
@@ -52,20 +54,25 @@ func (e *ZMYYEngine) CaptchaVerify(prefix string) (guid string, err error) {
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
 	headers["Cookie"] = e.Conf.Cookie
-	headers["Connection"] = consts.Connection
-	zftsl, err := util.GetZFTSL()
+	//headers["Connection"] = consts.Connection
+	headers["content-type"] = consts.ContentType
+	headers["Accept-Encoding"] = consts.AcceptEncoding
+
+	zftsl, err := utils.GetZFTSL()
 	headers["zftsl"] = zftsl
 	bytes, err := fetcher.Fetch(url, headers)
 	if err != nil {
 		return "", err
 	}
 	m := &model.VerifyResultModel{}
-	err = util.Transfer2VerifyResultModel(bytes, m)
-	defer util.DeleteFile(tigerPath, dragonPath, processPath, prefix)
+	err = utils.Transfer2VerifyResultModel(bytes, m)
 	if err != nil || m.Status != 200 || m.Guid == "" {
-		fmt.Printf("CaptchaVerify() 验证码%s验证失败，guid=%s ; err:%v; %s\n", prefix, m.Guid, err, bytes)
+		fmt.Printf("CaptchaVerify() 验证码%s验证失败 err:%v; %s\n", prefix, err, bytes)
 		return "", err
 	}
-
+	//如果验证码识别成功，则删除验证码图片
+	if m.Guid != "" {
+		utils.DeleteFile(tigerPath, dragonPath, processPath, prefix)
+	}
 	return m.Guid, nil
 }

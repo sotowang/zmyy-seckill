@@ -14,6 +14,8 @@ func main() {
 	e.Init()
 	customerId := -1
 	productId := -1
+	//设置抢购请求速率，0.5s/次
+	consts.RequestLimitRate.SetRate(1, 5)
 	for customerId == -1 || productId == -1 {
 		if customerId == -1 {
 			//获取指定地区接种地点的cutomerId
@@ -31,8 +33,6 @@ func main() {
 	timer := time.NewTimer(subsTime.Sub(now))
 	fmt.Printf("倒计时中，将在 %v 时运行程序...\n", subsTime)
 	<-timer.C
-	//设置抢购请求速率，2s/次
-	consts.RequestLimitRate.SetRate(1, 2)
 
 	e.Run(customerId, productId)
 	fmt.Println("运行结束.....")

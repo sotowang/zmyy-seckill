@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"zmyy_seckill/consts"
 	"zmyy_seckill/fetcher"
-	"zmyy_seckill/util"
+	"zmyy_seckill/utils"
 )
 
 func (e *ZMYYEngine) getUserInfo() {
@@ -13,7 +13,7 @@ func (e *ZMYYEngine) getUserInfo() {
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
 	headers["Cookie"] = e.Conf.Cookie
-	zftsl, err2 := util.GetZFTSL()
+	zftsl, err2 := utils.GetZFTSL()
 	if err2 != nil {
 		return
 	}

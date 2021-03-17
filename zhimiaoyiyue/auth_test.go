@@ -3,7 +3,7 @@ package zhimiaoyiyue
 import (
 	"fmt"
 	"testing"
-	"zmyy_seckill/util"
+	"zmyy_seckill/utils"
 )
 
 func TestAuth(t *testing.T) {
@@ -13,6 +13,6 @@ func TestAuth(t *testing.T) {
 }
 
 func TestParseSessionId(t *testing.T) {
-	id := util.ParseSessionId("ASP.NET_SessionId=jw1c3itgmqxoik0q3sazbyx5; path=/; HttpOnly; SameSite=Lax")
+	id := utils.ParseSessionId("ASP.NET_SessionId=jw1c3itgmqxoik0q3sazbyx5; path=/; HttpOnly; SameSite=Lax")
 	fmt.Printf("%s", id)
 }

@@ -7,7 +7,7 @@ import (
 	"zmyy_seckill/consts"
 	"zmyy_seckill/fetcher"
 	"zmyy_seckill/model"
-	"zmyy_seckill/util"
+	"zmyy_seckill/utils"
 )
 
 /**
@@ -26,7 +26,7 @@ func (e *ZMYYEngine) GetCustSubscribeDateAll(customerId, productId, month int) (
 		return nil, err
 	}
 	subsDates := model.SubscribeDate{}
-	err = util.Transfer2SubscribeDateModel(bytes, &subsDates)
+	err = utils.Transfer2SubscribeDateModel(bytes, &subsDates)
 	if err != nil {
 		fmt.Printf("GetCustSubscribeDateAll() err: %v\n ", err)
 		return nil, err
@@ -57,14 +57,14 @@ func (e *ZMYYEngine) GetCustSubscribeDateDetail(date string, productId, customer
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
 	headers["cookie"] = e.Conf.Cookie
-	zftsl, _ := util.GetZFTSL()
+	zftsl, _ := utils.GetZFTSL()
 	headers["zftsl"] = zftsl
 	bytes, err := fetcher.Fetch(url, headers)
 	if err != nil {
 		log.Printf("GetCustSubscribeDateDetail() err : %v \n", err)
 	}
 	dateDetails := &model.SubscribeDateDetail{}
-	err = util.Transfer2SubscribeDateDetailModel(bytes, dateDetails)
+	err = utils.Transfer2SubscribeDateDetailModel(bytes, dateDetails)
 	if err != nil {
 		log.Printf("GetCustSubscribeDateDetail() err: %v\n ", err)
 		return nil, err

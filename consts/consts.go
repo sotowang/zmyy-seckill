@@ -3,12 +3,13 @@ package consts
 import "zmyy_seckill/limit"
 
 var RequestLimitRate limit.LimitRate
-var Stop bool
 
 const (
-	UserAgent  = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat"
-	Refer      = "https://servicewechat.com/wx2c7f0f3c30d99445/72/page-frame.html"
-	Connection = "keep-alive"
+	UserAgent      = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat"
+	Refer          = "https://servicewechat.com/wx2c7f0f3c30d99445/73/page-frame.html"
+	Connection     = "keep-alive"
+	AcceptEncoding = "gzip, deflate, br"
+	ContentType    = "application/json"
 	//Host       = "https://106.13.187.42"
 	Host = "https://cloud.cn2030.com"
 	//Host       = "https://183.230.139.228"

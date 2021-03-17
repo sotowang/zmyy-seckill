@@ -5,7 +5,7 @@ import (
 	"github.com/thedevsaddam/gojsonq/v2"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"zmyy_seckill/util"
+	"zmyy_seckill/utils"
 )
 
 type RootConf struct {
@@ -30,7 +30,7 @@ type CustomerConf struct {
 }
 
 func (c *RootConf) GetConf() (CustomerConf, error) {
-	path := util.GetCurrentPath()
+	path := utils.GetCurrentPath()
 	confPath := path + "/config/conf.yaml"
 	yamlFile, err := ioutil.ReadFile(confPath)
 	fmt.Printf("当前执行路径 : %s \n", path)

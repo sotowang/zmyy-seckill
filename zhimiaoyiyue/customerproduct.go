@@ -8,7 +8,7 @@ import (
 	"zmyy_seckill/consts"
 	"zmyy_seckill/fetcher"
 	"zmyy_seckill/model"
-	"zmyy_seckill/util"
+	"zmyy_seckill/utils"
 )
 
 //获取换购疫苗的productId
@@ -21,7 +21,7 @@ func (e *ZMYYEngine) GetCustomerProduct(customerId int) (int, error) {
 	headers["Connection"] = consts.Connection
 	headers["Host"] = "cloud.cn2030.com"
 	headers["content-type"] = "application/json"
-	zftsl, _ := util.GetZFTSL()
+	zftsl, _ := utils.GetZFTSL()
 	headers["zftsl"] = zftsl
 
 	bytes, err := fetcher.Fetch(url, headers)
@@ -30,7 +30,7 @@ func (e *ZMYYEngine) GetCustomerProduct(customerId int) (int, error) {
 		return -1, err
 	}
 	customerProducts := model.RootSource{}
-	err = util.Transfer2CustomerProductListModel(bytes, &customerProducts)
+	err = utils.Transfer2CustomerProductListModel(bytes, &customerProducts)
 	if err != nil {
 		log.Printf("GetCustomerProduct() err: %v\n ", err)
 		return -1, err

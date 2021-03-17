@@ -8,8 +8,9 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 	"zmyy_seckill/consts"
-	"zmyy_seckill/util"
+	"zmyy_seckill/utils"
 )
 
 func Fetch(url string, headers map[string]string) ([]byte, error) {
@@ -20,12 +21,13 @@ func Fetch(url string, headers map[string]string) ([]byte, error) {
 	}
 	client := &http.Client{
 		Transport: tr,
+		Timeout:   3 * time.Second,
 	}
 	req, err := http.NewRequest("GET", url, nil)
 	for k, v := range headers {
 		req.Header.Set(k, v)
 	}
-	req.Header.Set("Host", consts.Host)
+	//req.Header.Set("Host", consts.Host)
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
@@ -48,17 +50,18 @@ func Fetch(url string, headers map[string]string) ([]byte, error) {
 }
 func FetchBigResp(url string, headers map[string]string, prefix string) error {
 	consts.RequestLimitRate.Limit()
+	fmt.Printf("正在发起请求.... url: %s\n", url)
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 	client := &http.Client{
 		Transport: tr,
+		Timeout:   3 * time.Second,
 	}
 	req, err := http.NewRequest("GET", url, nil)
 	for k, v := range headers {
 		req.Header.Set(k, v)
 	}
-	req.Header.Set("Host", consts.Host)
 	resp, err := client.Do(req)
 	//如果有重定向错误，则重定向
 	if resp.Request.Response != nil && resp.Request.Response.StatusCode == http.StatusFound {
@@ -72,7 +75,7 @@ func FetchBigResp(url string, headers map[string]string, prefix string) error {
 		return errors.New("获取验证码图片失败，请求可能被禁止！")
 	}
 	defer resp.Body.Close()
-	path := util.GetCurrentPath()
+	path := utils.GetCurrentPath()
 	path = path + "/imgs/" + prefix
 	f, _ := os.Create(path)
 	defer f.Close()

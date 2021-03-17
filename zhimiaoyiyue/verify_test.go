@@ -19,9 +19,11 @@ func init() {
 }
 
 func TestZMYYEngine_CaptchaVerify(t *testing.T) {
+
 	path, err := e.GetVerifyPic(dateDetail)
+
 	m, err := e.CaptchaVerify(path)
-	if err != nil {
+	if err != nil || m == "" {
 		t.Errorf("err: %v\n", err)
 	}
 	fmt.Printf("guid: %v \n", m)
