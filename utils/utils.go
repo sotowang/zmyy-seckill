@@ -96,14 +96,32 @@ func Base64ToPics(filePath string) error {
 	return nil
 }
 
+///**
+//  调用Python脚本破解验证码
+//*/
+//func CallPythonScript(tigerPath, dragonPath, procssPath string) (string, error) {
+//	path := GetCurrentPath()
+//	exePath := path + "/pyexe/main/main.exe"
+//	args := []string{tigerPath, dragonPath, procssPath}
+//	out, err := exec.Command(exePath, args...).Output()
+//	if err != nil {
+//		fmt.Printf("滑块验证码识别失败！ 图片为： %s,  err: %v\n", dragonPath, err.Error())
+//		return "", err
+//	}
+//	str := strings.Replace(string(out), "\r", "", -1)
+//	str = strings.Replace(str, "\n", "", -1)
+//	//fmt.Printf("滑块坐标为： %s\n", str)
+//	return str, nil
+//}
+
 /**
   调用Python脚本破解验证码
 */
 func CallPythonScript(tigerPath, dragonPath, procssPath string) (string, error) {
 	path := GetCurrentPath()
-	exePath := path + "/pyexe/main/main.exe"
-	args := []string{tigerPath, dragonPath, procssPath}
-	out, err := exec.Command(exePath, args...).Output()
+	exePath := path + "/main.py"
+	args := []string{exePath, tigerPath, dragonPath, procssPath}
+	out, err := exec.Command("python", args...).Output()
 	if err != nil {
 		fmt.Printf("滑块验证码识别失败！ 图片为： %s,  err: %v\n", dragonPath, err.Error())
 		return "", err
