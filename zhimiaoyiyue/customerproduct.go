@@ -21,7 +21,7 @@ func (e *ZMYYEngine) GetCustomerProduct(customerId int) (int, error) {
 	headers["Connection"] = consts.Connection
 	headers["Host"] = "cloud.cn2030.com"
 	headers["content-type"] = "application/json"
-	zftsl, _ := utils.GetZFTSL()
+	zftsl := utils.GetZFTSL()
 	headers["zftsl"] = zftsl
 
 	bytes, err := fetcher.Fetch(url, headers)

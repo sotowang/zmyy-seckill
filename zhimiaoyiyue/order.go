@@ -19,7 +19,7 @@ func (e *ZMYYEngine) SaveOrder(dateDetail model.DateDetail, productId string, gu
 	headers["Referer"] = consts.Refer
 	headers["Cookie"] = e.Conf.Cookie
 	headers["Connection"] = "keep-alive"
-	zftsl, _ := utils.GetZFTSL()
+	zftsl := utils.GetZFTSL()
 	headers["zftsl"] = zftsl
 	bytes, err := fetcher.Fetch(url, headers)
 	if err != nil {
@@ -45,7 +45,7 @@ func (e *ZMYYEngine) GetOrderStatus(dateDetail model.DateDetail) (bool, []byte, 
 	url := consts.OrderStatusUrl
 	headers := make(map[string]string)
 	headers["Referer"] = consts.Refer
-	zftsl, _ := utils.GetZFTSL()
+	zftsl := utils.GetZFTSL()
 	headers["zftsl"] = zftsl
 	headers["Cookie"] = e.Conf.Cookie
 	resp, err := fetcher.Fetch(url, headers)

@@ -13,10 +13,7 @@ func (e *ZMYYEngine) getUserInfo() {
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
 	headers["Cookie"] = e.Conf.Cookie
-	zftsl, err2 := utils.GetZFTSL()
-	if err2 != nil {
-		return
-	}
+	zftsl := utils.GetZFTSL()
 	headers["zftsl"] = zftsl
 	contents, err := fetcher.Fetch(UserInfoURL, headers)
 	if err != nil {

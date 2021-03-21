@@ -1,16 +1,19 @@
 package utils
 
 import (
+	"crypto/md5"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/robertkrimen/otto"
 	"io/ioutil"
 	"net/url"
 	"os"
 	"os/exec"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 	"zmyy_seckill/model"
 )
 
@@ -132,22 +135,28 @@ func CallPythonScript(tigerPath, dragonPath, procssPath string) (string, error) 
 	return str, nil
 }
 
-func GetZFTSL() (string, error) {
-	path := GetCurrentPath()
-	bytes, err := ioutil.ReadFile(path + "/js/app.js")
-	if err != nil {
-		fmt.Printf("GetZFTSL err : %v\n", err)
-		return "", err
-	}
-	vm := otto.New()
-	_, err = vm.Run(string(bytes))
-	enc, err := vm.Call("zftsl", nil)
-	if err != nil {
-		fmt.Printf("GetZFTSL err : %v\n", err)
-		return "", err
-	}
-	//fmt.Printf("zftsl : %s\n", enc.String())
-	return enc.String(), nil
+//func GetZFTSL() (string, error) {
+//	path := GetCurrentPath()
+//	bytes, err := ioutil.ReadFile(path + "/js/app.js")
+//	if err != nil {
+//		fmt.Printf("GetZFTSL err : %v\n", err)
+//		return "", err
+//	}
+//	vm := otto.New()
+//	_, err = vm.Run(string(bytes))
+//	enc, err := vm.Call("zftsl", nil)
+//	if err != nil {
+//		fmt.Printf("GetZFTSL err : %v\n", err)
+//		return "", err
+//	}
+//	//fmt.Printf("zftsl : %s\n", enc.String())
+//	return enc.String(), nil
+//}
+func GetZFTSL() string {
+	d := []byte("zfsw_" + strconv.FormatInt(time.Now().Unix()/10, 10))
+	m := md5.New()
+	m.Write(d)
+	return hex.EncodeToString(m.Sum(nil))
 }
 
 func UrlEncode(orgUrl string) string {

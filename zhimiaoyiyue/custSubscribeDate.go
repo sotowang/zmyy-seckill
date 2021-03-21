@@ -57,7 +57,7 @@ func (e *ZMYYEngine) GetCustSubscribeDateDetail(date string, productId, customer
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
 	headers["cookie"] = e.Conf.Cookie
-	zftsl, _ := utils.GetZFTSL()
+	zftsl := utils.GetZFTSL()
 	headers["zftsl"] = zftsl
 	bytes, err := fetcher.Fetch(url, headers)
 	if err != nil {
