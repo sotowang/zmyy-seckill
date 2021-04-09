@@ -62,6 +62,7 @@ func (e *ZMYYEngine) GetCustSubscribeDateDetail(date string, productId, customer
 	bytes, err := fetcher.Fetch(url, headers)
 	if err != nil {
 		log.Printf("GetCustSubscribeDateDetail() err : %v \n", err)
+		return nil, err
 	}
 	dateDetails := &model.SubscribeDateDetail{}
 	err = utils.Transfer2SubscribeDateDetailModel(bytes, dateDetails)
