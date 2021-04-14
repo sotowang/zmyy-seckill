@@ -15,7 +15,7 @@ func (e *ZMYYEngine) getUserInfo() {
 	headers["Cookie"] = e.Conf.Cookie
 	zftsl := utils.GetZFTSL()
 	headers["zftsl"] = zftsl
-	contents, err := fetcher.Fetch(UserInfoURL, headers)
+	contents, err := fetcher.FetchWithRatelimter(UserInfoURL, headers)
 	if err != nil {
 		return
 	}

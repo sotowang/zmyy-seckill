@@ -21,7 +21,7 @@ func (e *ZMYYEngine) SaveOrder(dateDetail model.DateDetail, productId string, gu
 	headers["Connection"] = "keep-alive"
 	zftsl := utils.GetZFTSL()
 	headers["zftsl"] = zftsl
-	bytes, err := fetcher.Fetch(url, headers)
+	bytes, err := fetcher.FetchWithRatelimter(url, headers)
 	if err != nil {
 		fmt.Printf("SaveOrder() err : %v \n", err)
 		return ok, err
@@ -48,7 +48,7 @@ func (e *ZMYYEngine) GetOrderStatus(dateDetail model.DateDetail) (bool, []byte, 
 	zftsl := utils.GetZFTSL()
 	headers["zftsl"] = zftsl
 	headers["Cookie"] = e.Conf.Cookie
-	resp, err := fetcher.Fetch(url, headers)
+	resp, err := fetcher.FetchWithRatelimter(url, headers)
 	if err != nil {
 		return false, nil, err
 	}
@@ -65,33 +65,25 @@ func (e *ZMYYEngine) GetOrderStatus(dateDetail model.DateDetail) (bool, []byte, 
 封装下单过程
 */
 func (e *ZMYYEngine) Bingo(dateDetail model.DateDetail, productId string) (bool, error) {
-	try := 0
 	path := ""
 	var err error
-	//1.获取验证码,重试3次
+	//1.获取验证码
 	fmt.Printf("正在获取验证码图片：%s  %s-%s\n", dateDetail.Date, dateDetail.StartTime, dateDetail.EndTime)
-	for path == "" && try < 3 {
-		path, err = e.GetVerifyPic(dateDetail)
-		try++
-	}
+	path, err = e.GetVerifyPic(dateDetail)
 	if path == "" {
 		return false, err
 	}
-	//2.识别验证码,重试3次
-	try = 0
+	//2.识别验证码
 	guid := ""
 	fmt.Printf("正在识别验证码图片：%s  %s-%s\n", dateDetail.Date, dateDetail.StartTime, dateDetail.EndTime)
-	for guid == "" && try < 3 {
-		guid, err = e.CaptchaVerify(path)
-		try++
-	}
+	guid, err = e.CaptchaVerify(path)
 	if guid == "" {
 		return false, err
 	}
 	//3.下单,重试3次
 	fmt.Printf("验证码图片:%s  %s-%s 识别成功，尝试下单中...\n", dateDetail.Date, dateDetail.StartTime, dateDetail.EndTime)
 	ok := false
-	try = 0
+	try := 0
 	for !ok && try < 3 {
 		ok, err = e.SaveOrder(dateDetail, productId, guid)
 		try++

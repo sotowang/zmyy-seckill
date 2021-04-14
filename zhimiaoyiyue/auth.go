@@ -13,7 +13,7 @@ func (e *ZMYYEngine) AuthAndSetSessionID() error {
 	headers["Referer"] = consts.Refer
 	zftsl := utils.GetZFTSL()
 	headers["zftsl"] = zftsl
-	contents, err := fetcher.Fetch(consts.AuthUrl, headers)
+	contents, err := fetcher.FetchWithRatelimter(consts.AuthUrl, headers)
 	if err != nil {
 		fmt.Printf("AuthAndSetSessionID err : %v \n", err)
 		return err

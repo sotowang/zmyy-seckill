@@ -1,135 +1,95 @@
 package ip
 
 import (
-	"encoding/json"
+	"bufio"
+	"crypto/tls"
 	"fmt"
-	"io/ioutil"
-	"math/rand"
+	"io"
+	"log"
 	"net/http"
 	"net/url"
-	"sync"
+	"os"
+	"strings"
 	"time"
 	"zmyy_seckill/consts"
+	"zmyy_seckill/utils"
 )
 
-type IPModel struct {
-	Code int    `json:"code"`
-	Msg  string `json:"msg"`
-	Data Data   `json:"data"`
-}
-type Data struct {
-	CurrentPage int      `json:"current_page"`
-	IPs         []IPInfo `json:"data"`
-	LastPage    string   `json:"last_page"`
-	PerPage     string   `json:"per_page"`
-	To          int      `json:"to"`
-	Total       int      `json:"total"`
-}
-type IPInfo struct {
-	IP          string `json:"ip"`
-	Port        string `json:"port"`
-	IpAddress   string `json:"ip_address"`
-	Speed       int    `json:"speed"`
-	Anonymity   int    `json:"anonymity"`
-	ISP         string `json:"isp"`
-	CreateAt    string `json:"create_at"`
-	UpdateAt    string `json:"update_at"`
-	UniqueId    string `json:"unique_id"`
-	ValidatedAt string `json:"validated_at"`
-	Protocol    string `json:"protocol"`
-}
-
-//ip获取
-var ip_urls = [...]string{"https://ip.jiangxianli.com/api/proxy_ips"}
-var wg sync.WaitGroup
-
-func fectch(url string) ([]string, error) {
-	client := &http.Client{
-		Timeout: 3 * time.Second,
-	}
-	req, _ := http.NewRequest("GET", url, nil)
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	contents, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return filterIP(contents)
-}
-
-/**
-过滤代理ip
-*/
-func filterIP(contents []byte) ([]string, error) {
-	ipModel := IPModel{}
-	json.Unmarshal(contents, &ipModel)
-	var ipArr []string
-	ch := make(chan string, len(ipModel.Data.IPs))
-	for _, v := range ipModel.Data.IPs {
-		wg.Add(1)
-		go func(ip string) {
-			proxyTest(ip, ch)
-		}("http://" + v.IP + ":" + v.Port)
-	}
-	go func(in <-chan string) {
-		for v := range in {
-			ipArr = append(ipArr, v)
-		}
-	}(ch)
-	wg.Wait()
-	return ipArr, nil
-}
+var ipchan = make(chan string, 100)
 
 /**
 判断代理ip的有效性
 */
-func proxyTest(ip string, out chan<- string) {
-	defer wg.Done()
-	testUrl := "http://www.baidu.com"
+func proxyTest(ip string) {
+	headers := make(map[string]string)
+	headers["User-Agent"] = consts.UserAgent
+	headers["Referer"] = consts.Refer
+	testUrl := "https://cloud.cn2030.com"
+	//testUrl := "https://www.baidu.com"
 	// 解析代理地址
 	proxy, err := url.Parse(ip)
 	//设置网络传输
-	netTransport := &http.Transport{
+	tr := &http.Transport{
+		TLSClientConfig:       &tls.Config{InsecureSkipVerify: true},
 		Proxy:                 http.ProxyURL(proxy),
 		MaxIdleConnsPerHost:   10,
-		ResponseHeaderTimeout: time.Second * time.Duration(3),
+		ResponseHeaderTimeout: time.Second * 3,
 	}
 	// 创建连接客户端
-	httpClient := &http.Client{
-		Timeout:   time.Second * 3,
-		Transport: netTransport,
+	client := &http.Client{
+		Transport: tr,
+		Timeout:   5 * time.Second,
 	}
-	res, err := httpClient.Get(testUrl)
-
-	if err != nil || res.StatusCode != http.StatusOK {
+	req, err := http.NewRequest("GET", testUrl, nil)
+	for k, v := range headers {
+		req.Header.Set(k, v)
+	}
+	resp, err := client.Do(req)
+	if err != nil || resp.StatusCode != http.StatusOK {
+		//fmt.Printf("无效ip : %v \n", ip)
 		return
 	}
-	defer res.Body.Close()
+	defer resp.Body.Close()
 	fmt.Printf("有效ip : %v \n", ip)
-	out <- ip
+	ipchan <- ip
 }
-func FetchIp() (ip []string) {
-	fmt.Printf("尝试获取代理ip...\n")
-	for _, url := range ip_urls {
-		ip, _ = fectch(url)
-		fmt.Printf("共找到 %d 个 可用 ip\n", len(ip))
+func ReadIpFile() (ipArr []string) {
+	defer close(ipchan)
+	path := utils.GetCurrentPath() + "/ip/ip.txt"
+	ipFile, err := os.Open(path)
+	if err != nil {
+		log.Printf("未找到ip文件：%s \n", path)
 		return
 	}
-	return nil
-}
-func SetRandomIP() string {
-	if consts.ProxyIpArr == nil || len(consts.ProxyIpArr) == 0 {
-		//如果IP池IP用尽，则使用本机IP
-		consts.ProxyIp = ""
-		return consts.ProxyIp
+	defer ipFile.Close()
+	//按行读ip
+	buf := bufio.NewReader(ipFile)
+	for {
+		ip, err := buf.ReadString('\n')
+		ip = strings.TrimSpace(ip)
+		if err != nil {
+			if err == io.EOF {
+				break
+			} else {
+				return
+			}
+		}
+		//ip验证
+		go func(ip string) {
+			proxyTest(ip)
+		}("http://" + ip)
 	}
-	//随机从ip池中获取一个ip
-	index := rand.Intn(len(consts.ProxyIpArr))
-	consts.ProxyIp = consts.ProxyIpArr[index]
-	//删除该ip
-	consts.ProxyIpArr = append(consts.ProxyIpArr[:index], consts.ProxyIpArr[index+1:]...)
-	return consts.ProxyIp
+
+	for {
+		select {
+		case ip := <-ipchan:
+			ipArr = append(ipArr, ip)
+		case <-time.After(5 * time.Second):
+			goto iparr
+		}
+	}
+iparr:
+	ipArr = append(ipArr, "")
+	fmt.Printf("共找到 %d 个 可用 ip\n", len(ipArr)-1)
+	return
 }

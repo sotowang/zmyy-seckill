@@ -24,9 +24,9 @@ func (e *ZMYYEngine) GetCustomerProduct(customerId int) (int, error) {
 	zftsl := utils.GetZFTSL()
 	headers["zftsl"] = zftsl
 
-	bytes, err := fetcher.Fetch(url, headers)
+	bytes, err := fetcher.FetchWithRatelimter(url, headers)
 	if err != nil {
-		log.Printf("GetCustomerProduct() err : %v \n", err)
+		//log.Printf("GetCustomerProduct() err : %v \n", err)
 		return -1, err
 	}
 	customerProducts := model.RootSource{}

@@ -24,7 +24,7 @@ func (e *ZMYYEngine) GetVerifyPic(dateDetail model.DateDetail) (path string, err
 	zftsl := utils.GetZFTSL()
 	headers["zftsl"] = zftsl
 	prefix := dateDetail.Date + "-" + strings.Replace(dateDetail.StartTime, ":", "_", -1) + "-" + strings.Replace(dateDetail.EndTime, ":", "_", -1)
-	err = fetcher.FetchBigResp(url, headers, prefix)
+	err = fetcher.FetchCaptcha(url, headers, prefix)
 	if err != nil {
 		return "", err
 	}
@@ -60,19 +60,17 @@ func (e *ZMYYEngine) CaptchaVerify(prefix string) (guid string, err error) {
 
 	zftsl := utils.GetZFTSL()
 	headers["zftsl"] = zftsl
-	bytes, err := fetcher.Fetch(url, headers)
+	bytes, err := fetcher.FetchWithRatelimter(url, headers)
 	if err != nil {
 		return "", err
 	}
 	m := &model.VerifyResultModel{}
 	err = utils.Transfer2VerifyResultModel(bytes, m)
+	//删除验证码图片
+	defer utils.DeleteFile(tigerPath, dragonPath, processPath, prefix)
 	if err != nil || m.Status != 200 || m.Guid == "" {
 		fmt.Printf("CaptchaVerify() 验证码%s验证失败 err:%v; %s\n", prefix, err, bytes)
 		return "", err
-	}
-	//如果验证码识别成功，则删除验证码图片
-	if m.Guid != "" {
-		utils.DeleteFile(tigerPath, dragonPath, processPath, prefix)
 	}
 	return m.Guid, nil
 }

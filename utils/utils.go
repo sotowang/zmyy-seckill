@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"net/url"
 	"os"
 	"os/exec"
@@ -14,6 +15,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"zmyy_seckill/consts"
 	"zmyy_seckill/model"
 )
 
@@ -156,5 +158,18 @@ func DeleteFile(path ...string) {
 			fmt.Printf("删除文件%s失败：%v\n", v, err)
 		}
 	}
-	//fmt.Printf("已删除验证码文件%s.\n", path[0])
+}
+
+func SetRandomIP() string {
+	selectedIp := ""
+	if consts.ProxyIpArr == nil || len(consts.ProxyIpArr) == 0 {
+		//如果IP池IP用尽，则使用本机IP
+		return selectedIp
+	}
+	//随机从ip池中获取一个ip
+	index := rand.Intn(len(consts.ProxyIpArr))
+	selectedIp = consts.ProxyIpArr[index]
+	//删除该ip
+	consts.ProxyIpArr = append(consts.ProxyIpArr[:index], consts.ProxyIpArr[index+1:]...)
+	return selectedIp
 }

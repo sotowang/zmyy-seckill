@@ -7,10 +7,7 @@ import (
 
 func TestZMYYEngine_GetCustSubscribeDateAll(t *testing.T) {
 	e := ZMYYEngine{}
-	all, err := e.GetCustSubscribeDateAll(1921, 1, 202102)
-	if err != nil {
-		t.Errorf("%v", err)
-	}
+	all := e.GetCustSubscribeDateAll(1921, 1, 202102)
 	fmt.Printf("%v", all)
 }
 func TestZMYYEngine_GetCustSubscribeDateDetail(t *testing.T) {
