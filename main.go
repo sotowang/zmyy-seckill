@@ -2,23 +2,28 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"time"
 	"zmyy_seckill/consts"
 	"zmyy_seckill/ip"
+	"zmyy_seckill/limit"
 	"zmyy_seckill/zhimiaoyiyue"
 )
-
-var stop bool
 
 func main() {
 	e := zhimiaoyiyue.ZMYYEngine{}
 	e.Init()
 	//获取可用代理ip,下行代码开启时则启用ip代理,默认使用本机的ip
 	consts.ProxyIpArr = ip.ReadIpFile()
-	//utils.SetRandomIP()
 	customerId, productId := -1, -1
+	lrmap := make(map[string]*limit.LimitRate, len(consts.ProxyIpArr))
+	for _, ip := range consts.ProxyIpArr {
+		lr := &limit.LimitRate{}
+		lrmap[ip] = lr
+	}
+	consts.LR.LRMap = lrmap
 	//设置抢购请求速率，2s/次，下行代码开启时则开始限流
-	consts.RequestLimitRate.SetRate(1, 20)
+	consts.LR.SetRate(1, 20)
 	for customerId == -1 || productId == -1 {
 		if customerId == -1 {
 			//获取指定地区接种地点的customerId
@@ -36,6 +41,7 @@ func main() {
 	timer := time.NewTimer(subsTime.Sub(now))
 	fmt.Printf("倒计时中，将在 %v 时运行程序...\n", subsTime)
 	<-timer.C
-	fmt.Printf("开始运行zmyy_seckill....\n")
-	e.Run(customerId, productId)
+	log.Printf("开始运行zmyy-seckill....\n")
+	startTime := time.Now()
+	e.Run(customerId, productId, startTime)
 }

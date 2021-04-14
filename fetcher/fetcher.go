@@ -15,9 +15,15 @@ import (
 	"zmyy_seckill/utils"
 )
 
-//使用限流器请求url
+//使用限流器请求url,限流速度根据IP进行区分
 func FetchWithRatelimter(zhimiaoUrl string, headers map[string]string, v ...string) ([]byte, error) {
-	consts.RequestLimitRate.Limit()
+	if v == nil {
+		consts.LR.LRMap[""].Limit()
+	} else {
+		for _, ip := range v {
+			consts.LR.LRMap[ip].Limit()
+		}
+	}
 	return Fetch(zhimiaoUrl, headers, v...)
 }
 
@@ -34,7 +40,7 @@ func Fetch(zhimiaoUrl string, headers map[string]string, v ...string) ([]byte, e
 		proxyUrl, _ := url.Parse(proxyIp)
 		proxy = http.ProxyURL(proxyUrl)
 	}
-	log.Printf("%s 正在发起请求.... url: %s\n", proxyIp, zhimiaoUrl)
+	log.Printf("%v 正在发起请求.... url: %s\n", v, zhimiaoUrl)
 	tr := &http.Transport{
 		TLSClientConfig:       &tls.Config{InsecureSkipVerify: true},
 		Proxy:                 proxy,
@@ -63,14 +69,14 @@ func Fetch(zhimiaoUrl string, headers map[string]string, v ...string) ([]byte, e
 		return Fetch(zhimiaoUrl, headers, v...)
 	}
 	if resp.StatusCode != http.StatusOK {
-		log.Printf("%s fetch err : %v \n", proxyIp, resp.StatusCode)
+		log.Printf("%v fetch err : %v \n", v, resp.StatusCode)
 		//切换IP
 		//utils.SetRandomIP()
 		return nil, fmt.Errorf("wrong status code: %d", resp.StatusCode)
 	}
 	contents, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Printf("%s fetch err : %v \n", proxyIp, err)
+		log.Printf("%v fetch err : %v \n", v, err)
 		//切换IP
 		//utils.SetRandomIP()
 		return nil, err
@@ -78,17 +84,27 @@ func Fetch(zhimiaoUrl string, headers map[string]string, v ...string) ([]byte, e
 	return contents, nil
 }
 func FetchCaptcha(captchaUrl string, headers map[string]string, prefix string, v ...string) error {
-	consts.RequestLimitRate.Limit()
-	var proxy *url.URL
-	proxyIp := ""
-	if len(v) > 0 {
-		proxyIp = v[0]
-		proxy, _ = url.Parse(proxyIp)
+	if v == nil {
+		consts.LR.LRMap[""].Limit()
+	} else {
+		for _, ip := range v {
+			consts.LR.LRMap[ip].Limit()
+		}
 	}
-	log.Printf("%s 正在发起请求.... captchaUrl: %s\n", proxyIp, captchaUrl)
+	var proxy func(*http.Request) (*url.URL, error)
+	proxyIp := ""
+	//目前v参数中为代理ip，若v长度>0，则需要使用代理
+	for _, ip := range v {
+		proxyIp = ip
+	}
+	if proxyIp != "" {
+		proxyUrl, _ := url.Parse(proxyIp)
+		proxy = http.ProxyURL(proxyUrl)
+	}
+	log.Printf("%v 正在发起请求.... captchaUrl: %s\n", v, captchaUrl)
 	tr := &http.Transport{
 		TLSClientConfig:       &tls.Config{InsecureSkipVerify: true},
-		Proxy:                 http.ProxyURL(proxy),
+		Proxy:                 proxy,
 		MaxIdleConnsPerHost:   10,
 		ResponseHeaderTimeout: time.Second * 3,
 	}
@@ -102,9 +118,9 @@ func FetchCaptcha(captchaUrl string, headers map[string]string, prefix string, v
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Printf("%s fetch err : %v \n", proxyIp, err)
+		log.Printf("%v fetch err : %v \n", v, err)
 		//切换IP
-		utils.SetRandomIP()
+		//utils.SetRandomIP()
 		return err
 	}
 	//如果有重定向错误，则重定向
@@ -115,8 +131,8 @@ func FetchCaptcha(captchaUrl string, headers map[string]string, prefix string, v
 	b, err := strconv.Atoi(resp.Header.Get("Content-Length"))
 	if err != nil || resp.StatusCode != http.StatusOK || b < 100 {
 		fmt.Printf("获取验证码图片失败，请求可能被禁止！code： %d\n", resp.StatusCode)
-		log.Printf("%s fetch err : %v \n", proxyIp, err)
-		utils.SetRandomIP()
+		log.Printf("%v fetch err : %v \n", v, err)
+		//utils.SetRandomIP()
 		return errors.New("获取验证码图片失败，请求可能被禁止！")
 	}
 	defer resp.Body.Close()

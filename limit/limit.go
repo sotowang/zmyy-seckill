@@ -5,6 +5,16 @@ import (
 	"time"
 )
 
+type LR struct {
+	LRMap map[string]*LimitRate
+}
+
+func (lr *LR) SetRate(r int, second int) {
+	for _, l := range lr.LRMap {
+		l.SetRate(r, second)
+	}
+}
+
 //LimitRate 限速
 type LimitRate struct {
 	rate       int

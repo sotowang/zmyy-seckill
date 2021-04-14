@@ -1,7 +1,7 @@
 package zhimiaoyiyue
 
 import (
-	"fmt"
+	"log"
 	"strings"
 	"zmyy_seckill/consts"
 	"zmyy_seckill/fetcher"
@@ -12,7 +12,7 @@ import (
 /**
 获取验证码图片
 */
-func (e *ZMYYEngine) GetVerifyPic(dateDetail model.DateDetail) (path string, err error) {
+func (e *ZMYYEngine) GetVerifyPic(dateDetail model.DateDetail, ip ...string) (path string, err error) {
 	url := consts.GetCaptchaUrl
 	headers := make(map[string]string)
 	headers["User-Agent"] = consts.UserAgent
@@ -24,7 +24,7 @@ func (e *ZMYYEngine) GetVerifyPic(dateDetail model.DateDetail) (path string, err
 	zftsl := utils.GetZFTSL()
 	headers["zftsl"] = zftsl
 	prefix := dateDetail.Date + "-" + strings.Replace(dateDetail.StartTime, ":", "_", -1) + "-" + strings.Replace(dateDetail.EndTime, ":", "_", -1)
-	err = fetcher.FetchCaptcha(url, headers, prefix)
+	err = fetcher.FetchCaptcha(url, headers, prefix, ip...)
 	if err != nil {
 		return "", err
 	}
@@ -40,7 +40,7 @@ func (e *ZMYYEngine) GetVerifyPic(dateDetail model.DateDetail) (path string, err
 /**
 滑块验证码验证
 */
-func (e *ZMYYEngine) CaptchaVerify(prefix string) (guid string, err error) {
+func (e *ZMYYEngine) CaptchaVerify(prefix string, ip ...string) (guid string, err error) {
 	tigerPath, dragonPath, processPath := prefix+"-tiger.png", prefix+"-dragon.png", prefix+"-process.png"
 	//2.图片验证码识别
 	x, err := utils.CallPythonScript(tigerPath, dragonPath, processPath)
@@ -60,7 +60,7 @@ func (e *ZMYYEngine) CaptchaVerify(prefix string) (guid string, err error) {
 
 	zftsl := utils.GetZFTSL()
 	headers["zftsl"] = zftsl
-	bytes, err := fetcher.FetchWithRatelimter(url, headers)
+	bytes, err := fetcher.FetchWithRatelimter(url, headers, ip...)
 	if err != nil {
 		return "", err
 	}
@@ -69,7 +69,7 @@ func (e *ZMYYEngine) CaptchaVerify(prefix string) (guid string, err error) {
 	//删除验证码图片
 	defer utils.DeleteFile(tigerPath, dragonPath, processPath, prefix)
 	if err != nil || m.Status != 200 || m.Guid == "" {
-		fmt.Printf("CaptchaVerify() 验证码%s验证失败 err:%v; %s\n", prefix, err, bytes)
+		log.Printf("CaptchaVerify() 验证码%s验证失败 err:%v; %s\n", prefix, err, bytes)
 		return "", err
 	}
 	return m.Guid, nil

@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"sync"
 	"time"
 	"zmyy_seckill/consts"
 	"zmyy_seckill/utils"
@@ -20,7 +21,8 @@ var ipchan = make(chan string, 100)
 /**
 判断代理ip的有效性
 */
-func proxyTest(ip string) {
+func proxyTest(ip string, wg *sync.WaitGroup) {
+	defer wg.Done()
 	headers := make(map[string]string)
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
@@ -64,6 +66,7 @@ func ReadIpFile() (ipArr []string) {
 	defer ipFile.Close()
 	//按行读ip
 	buf := bufio.NewReader(ipFile)
+	ipWg := &sync.WaitGroup{}
 	for {
 		ip, err := buf.ReadString('\n')
 		ip = strings.TrimSpace(ip)
@@ -75,20 +78,15 @@ func ReadIpFile() (ipArr []string) {
 			}
 		}
 		//ip验证
+		ipWg.Add(1)
 		go func(ip string) {
-			proxyTest(ip)
+			proxyTest(ip, ipWg)
 		}("http://" + ip)
 	}
-
-	for {
-		select {
-		case ip := <-ipchan:
-			ipArr = append(ipArr, ip)
-		case <-time.After(5 * time.Second):
-			goto iparr
-		}
+	ipWg.Wait()
+	for i := 0; i < len(ipchan); i++ {
+		ipArr = append(ipArr, <-ipchan)
 	}
-iparr:
 	ipArr = append(ipArr, "")
 	fmt.Printf("共找到 %d 个 可用 ip\n", len(ipArr)-1)
 	return
