@@ -16,7 +16,7 @@ import (
 	"zmyy_seckill/utils"
 )
 
-var ipchan = make(chan string, 100)
+var ipCh = make(chan string, 100)
 
 /**
 判断代理ip的有效性
@@ -26,8 +26,8 @@ func proxyTest(ip string, wg *sync.WaitGroup) {
 	headers := make(map[string]string)
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
-	testUrl := "https://cloud.cn2030.com"
-	//testUrl := "https://www.baidu.com"
+	//testUrl := "https://cloud.cn2030.com"
+	testUrl := "https://www.baidu.com"
 	// 解析代理地址
 	proxy, err := url.Parse(ip)
 	//设置网络传输
@@ -48,15 +48,15 @@ func proxyTest(ip string, wg *sync.WaitGroup) {
 	}
 	resp, err := client.Do(req)
 	if err != nil || resp.StatusCode != http.StatusOK {
-		//fmt.Printf("无效ip : %v \n", ip)
 		return
 	}
 	defer resp.Body.Close()
 	fmt.Printf("有效ip : %v \n", ip)
-	ipchan <- ip
+	ipCh <- ip
 }
 func ReadIpFile() (ipArr []string) {
-	defer close(ipchan)
+	log.Printf("========================正在验证IP=============================\n")
+	//defer close(ipCh)
 	path := utils.GetCurrentPath() + "/ip/ip.txt"
 	ipFile, err := os.Open(path)
 	if err != nil {
@@ -67,11 +67,13 @@ func ReadIpFile() (ipArr []string) {
 	//按行读ip
 	buf := bufio.NewReader(ipFile)
 	ipWg := &sync.WaitGroup{}
+	end := false
 	for {
 		ip, err := buf.ReadString('\n')
 		ip = strings.TrimSpace(ip)
 		if err != nil {
 			if err == io.EOF {
+				end = true
 				break
 			} else {
 				return
@@ -84,8 +86,11 @@ func ReadIpFile() (ipArr []string) {
 		}("http://" + ip)
 	}
 	ipWg.Wait()
-	for i := 0; i < len(ipchan); i++ {
-		ipArr = append(ipArr, <-ipchan)
+	for !end {
+	}
+	close(ipCh)
+	for ip := range ipCh {
+		ipArr = append(ipArr, ip)
 	}
 	ipArr = append(ipArr, "")
 	fmt.Printf("共找到 %d 个 可用 ip\n", len(ipArr)-1)
