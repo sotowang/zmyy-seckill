@@ -13,7 +13,7 @@ import (
 //获取指定接种地ID
 func (e *ZMYYEngine) GetCustomerList(ip ...string) (int, error) {
 	params := "[\"" + e.Conf.Province + "\",\"" + e.Conf.City + "\",\"" + e.Conf.District + "\"]"
-	newUrl := consts.CustomerListUrl + "&city=" + utils.UrlEncode(params) + "&id=0&cityCode=" + e.Conf.CityCode + "&product=0"
+	newUrl := consts.CustomerListUrl + "&city=" + utils.UrlEncode(params)  + "&lat=31.23037&lng=121.4737" + "&id=0&cityCode=" + e.Conf.CityCode + "&product=0"
 	headers := make(map[string]string)
 	headers["User-Agent"] = consts.UserAgent
 	headers["Referer"] = consts.Refer
