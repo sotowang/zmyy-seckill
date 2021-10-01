@@ -16,7 +16,7 @@ type RootSource struct {
 type CustomerProduct struct {
 	Id              int       `json:"id"`
 	Text            string    `json:"text"`
-	Price           float64   `json:"price"`
+	Price           string   `json:"price"`
 	Descript        string    `json:"descript"`
 	Warn            string    `json:"warn"`
 	Tags            []string  `json:"tags"`
